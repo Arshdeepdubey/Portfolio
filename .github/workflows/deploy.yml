@@ -17,12 +17,16 @@ jobs:
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
-          node-on-version: '18'
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: mac-portfolio/package-lock.json
 
       - name: Install Project Dependencies
+        working-directory: mac-portfolio
         run: npm ci
 
       - name: Compile Code and Build Production Static Site
+        working-directory: mac-portfolio
         run: npm run build
 
       - name: Push Build Output to GitHub Pages Branch
