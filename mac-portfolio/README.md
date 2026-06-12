@@ -48,19 +48,14 @@ Project structure (important files)
 - `src/main.tsx` — app entry; imports global CSS and mounts React app.
 - `src/App.tsx` — main UI component containing the portfolio sections and interactive arcade-style controls.
 - `src/index.css` — primary styling for the site. This file contains the visual theme, layout, and animations.
-- `src/App.css` — (present in the repo) legacy/unused mac UI styles — see notes below.
+ - `src/App.css` — (removed) legacy/unused mac UI styles — deleted during cleanup.
 - `public/` — static assets (icons, favicon).
 - `vite.config.ts` — vite configuration (note `base` for GitHub Pages deployments).
 - `package.json` — scripts and dependency list.
 
 Known observations and suggested cleanups
 
-- `src/App.css` is not imported anywhere in the codebase (the app uses `src/index.css` and `@sakun/system.css`). It appears to contain older UI styles. If you are not using it, you can safely remove it to reduce clutter. To remove:
-
-```bash
-rm mac-portfolio/src/App.css
-git rm mac-portfolio/src/App.css
-```
+`src/App.css` was removed in this cleanup because it was not imported anywhere (the app uses `src/index.css` and `@sakun/system.css`).
 
 - `vite.config.ts` currently sets `base: '/Portfolio/'`. If your GitHub repository or deploy path is different, update that value. For GitHub Pages under the repo `username/Portfolio`, this value is correct.
 
