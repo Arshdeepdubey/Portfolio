@@ -5,6 +5,7 @@
    are installed and resolved correctly.
 */
 
+import parser from '@typescript-eslint/parser'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
@@ -12,7 +13,7 @@ export default defineConfig([
   {
     files: ['**/*.{js,ts,tsx}'],
     languageOptions: {
-      parser: '@typescript-eslint/parser',
+      parser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
