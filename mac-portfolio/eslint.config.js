@@ -12,6 +12,12 @@ export default defineConfig([
   {
     files: ['**/*.{js,ts,tsx}'],
     languageOptions: {
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        ecmaFeatures: { jsx: true }
+      },
       globals: { browser: true },
     },
     rules: {},
