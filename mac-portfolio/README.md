@@ -1,73 +1,91 @@
-# React + TypeScript + Vite
+# Arshdeep Dubey — Portfolio (mac-portfolio)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This repository contains a single-page portfolio built with React, TypeScript and Vite.
 
-Currently, two official plugins are available:
+Overview
+- Purpose: a stylized Mac/arcade-themed interactive portfolio that presents resume, projects and contact links.
+- Frameworks: React + TypeScript, bundled with Vite.
+- Target: static hosting (GitHub Pages, Netlify, Vercel, etc.). Note: `vite.config.ts` sets `base: '/Portfolio/'` — change that if you deploy under a different path.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Quick start (development)
 
-## React Compiler
+1. Install dependencies
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+cd mac-portfolio
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Run dev server
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run dev
 ```
+
+3. Open http://localhost:5173 (Vite prints the exact URL).
+
+Build for production
+
+```bash
+npm run build
+```
+
+Preview the production build locally
+
+```bash
+npm run preview
+```
+
+Linting
+
+```bash
+npm run lint
+```
+
+Project structure (important files)
+
+- `index.html` — root HTML file.
+- `src/main.tsx` — app entry; imports global CSS and mounts React app.
+- `src/App.tsx` — main UI component containing the portfolio sections and interactive arcade-style controls.
+- `src/index.css` — primary styling for the site. This file contains the visual theme, layout, and animations.
+- `src/App.css` — (present in the repo) legacy/unused mac UI styles — see notes below.
+- `public/` — static assets (icons, favicon).
+- `vite.config.ts` — vite configuration (note `base` for GitHub Pages deployments).
+- `package.json` — scripts and dependency list.
+
+Known observations and suggested cleanups
+
+- `src/App.css` is not imported anywhere in the codebase (the app uses `src/index.css` and `@sakun/system.css`). It appears to contain older UI styles. If you are not using it, you can safely remove it to reduce clutter. To remove:
+
+```bash
+rm mac-portfolio/src/App.css
+git rm mac-portfolio/src/App.css
+```
+
+- `vite.config.ts` currently sets `base: '/Portfolio/'`. If your GitHub repository or deploy path is different, update that value. For GitHub Pages under the repo `username/Portfolio`, this value is correct.
+
+- `eslint.config.js` imports `typescript-eslint` as `tseslint`. The published package name is usually `@typescript-eslint/eslint-plugin` and `@typescript-eslint/parser`. If linting fails, check installed ESLint plugin packages and update `package.json` and `eslint.config.js` accordingly.
+
+Recommendations
+
+- Remove `node_modules` and `package-lock.json` from the repository if you don't intend to commit them (they are already present locally). Typically `node_modules/` is gitignored and `package-lock.json` is committed for reproducible installs — choose what's appropriate for your workflow.
+- Keep `index.css` as the canonical stylesheet. Consolidate any remaining styles into it and remove `App.css`.
+- If you plan to publish on GitHub Pages under a different path (or as a user site), update `vite.config.ts` and the deploy steps accordingly.
+
+Deployment notes (GitHub Pages simple flow)
+
+1. Build the app: `npm run build`.
+2. Commit the `dist/` (or serve it via GitHub Pages action). A common approach is to use a GitHub Action to build and push the production output to the `gh-pages` branch.
+
+Example GitHub Action (workflow) is omitted here but can be added on request.
+
+Contact
+
+If you'd like me to:
+- remove or consolidate unused files (I can remove `src/App.css`),
+- adjust the `vite.config.ts` base path for a specific hosting target, or
+- add a GitHub Actions workflow to deploy to GitHub Pages — tell me which and I'll make the changes and run quick validations.
+
+---
+Updated: 
+
