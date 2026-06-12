@@ -11,8 +11,7 @@ export default defineConfig([
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
-      'eslint:recommended',
-      'plugin:@typescript-eslint/recommended'
+      'eslint:recommended'
     ],
     languageOptions: {
       parser: '@typescript-eslint/parser',
