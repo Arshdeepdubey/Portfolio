@@ -3,6 +3,7 @@
   --window-bg: #ffffff;
   --text-color: #000000;
   --mac-border: 2px solid #000000;
+  --pacman-yellow: #f39c12;
 }
 
 * {
@@ -25,7 +26,7 @@ body, html, #root {
   scroll-behavior: smooth;
 }
 
-/* Fixed System Navigation Bar Container */
+/* System Navbar Setup */
 .mac-os-navbar {
   position: fixed;
   top: 0;
@@ -62,7 +63,6 @@ body, html, #root {
   color: #ffffff;
 }
 
-/* State Controlled Dropdown Window Allocation */
 .dropdown-menu-list {
   display: none;
   position: absolute;
@@ -71,11 +71,10 @@ body, html, #root {
   background: #ffffff;
   border: var(--mac-border);
   box-shadow: 4px 4px 0px #000000;
-  min-width: 200px;
+  min-width: 210px;
   z-index: 10005;
 }
 
-/* Explicit class handling display toggle dynamically via React */
 .dropdown-menu-list.show {
   display: block;
 }
@@ -100,7 +99,7 @@ body, html, #root {
   margin: 2px 0;
 }
 
-/* Main Frame Workspace Layout */
+/* Main Workspace Framework */
 .portfolio-mainframe {
   max-width: 960px;
   margin: 50px auto 40px auto;
@@ -115,6 +114,7 @@ body, html, #root {
   display: flex;
   flex-direction: column;
   width: 100%;
+  position: relative;
 }
 
 .window-header-strip {
@@ -146,8 +146,139 @@ body, html, #root {
 
 .window-scrollable-body {
   padding: 30px;
+  position: relative;
 }
 
+/* Arcade Cabinet Layouts */
+.arcade-boot-overlay {
+  background: #000000;
+  color: #ffffff;
+  padding: 60px 20px;
+  text-align: center;
+  border: 4px double #ffffff;
+  margin: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 0 20px rgba(255,255,255,0.2);
+}
+
+.arcade-title-neon {
+  color: #ff007f;
+  font-size: 28px;
+  font-weight: bold;
+  text-shadow: 0 0 8px #ff007f;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.arcade-subtitle {
+  color: #00f0ff;
+  font-size: 14px;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+
+.arcade-insert-coin-btn {
+  background: var(--pacman-yellow);
+  color: #000000;
+  border: 3px solid #ffffff;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 4px 4px 0px #ff007f;
+  text-transform: uppercase;
+  margin-bottom: 15px;
+}
+
+.arcade-insert-coin-btn:hover {
+  background: #ffffff;
+  box-shadow: 2px 2px 0px #ff007f;
+  transform: translate(2px, 2px);
+}
+
+/* Urgency Timer Controls Panel */
+.pacman-dashboard-widget {
+  background: #fffb15;
+  color: #000000;
+  border: 2px solid #000000;
+  padding: 8px 16px;
+  margin: 15px 30px 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 4px 4px 0px #000000;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.hold-toggle-button {
+  background: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 11px;
+  text-transform: uppercase;
+}
+
+.hold-toggle-button.active-hold {
+  background: #ff0055;
+  color: #ffffff;
+}
+
+/* ================= COMPREHENSIVE TEXT ERASER LAYER ================= */
+.active-eating-stage-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 998;
+  pointer-events: none; /* Prevents disruption during click cycles */
+  overflow: hidden;
+}
+
+/* Solid black blanket tracking Ms. Pac-man to block resume text out entirely */
+.eating-black-blanket {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: #000000;
+  width: 0%;
+  animation: blankingWipeEffect 4.5s linear forwards;
+}
+
+.pacman-live-chomper {
+  font-size: 54px;
+  color: var(--pacman-yellow);
+  position: absolute;
+  top: 30%;
+  left: -60px;
+  transform: translateY(-50%);
+  animation: visualChompRun 4.5s linear forwards;
+  z-index: 999;
+}
+
+@keyframes visualChompRun {
+  0% { left: -60px; }
+  100% { left: 105%; }
+}
+
+@keyframes blankingWipeEffect {
+  0% { width: 0%; }
+  100% { width: 105%; }
+}
+
+@keyframes blink-text {
+  from { opacity: 1; }
+  to { opacity: 0.3; }
+}
+
+/* Standard Section Layout Mechanics */
 .portfolio-section-block {
   padding: 40px 0;
   border-bottom: 2px dashed #000000;
@@ -157,111 +288,18 @@ body, html, #root {
   border-bottom: none;
 }
 
-/* Typography Modifications */
-.hero-intro-box {
-  text-align: center;
-  padding: 20px 0 40px 0;
-}
-
-.hero-greeting {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 6px;
-}
-
-.hero-subtitle {
-  font-size: 15px;
-  font-weight: bold;
-  color: #333333;
-  margin-bottom: 12px;
-}
-
-.status-badge {
-  background: #000000;
-  color: #ffffff;
-  display: inline-block;
-  padding: 4px 12px;
-  font-size: 12px;
-  font-weight: bold;
-  text-transform: uppercase;
-}
-
-.section-caption-header {
-  font-size: 20px;
-  font-weight: bold;
-  text-transform: uppercase;
-  margin-bottom: 16px;
-  border-left: 6px solid #000000;
-  padding-left: 10px;
-}
-
-.paragraph-content {
-  font-size: 13px;
-  line-height: 1.6;
-  margin-bottom: 15px;
-  text-align: justify;
-}
-
-.timeline-card {
-  border: 1px solid #000000;
-  padding: 16px;
-  background: #fafafa;
-  margin-bottom: 16px;
-  box-shadow: 3px 3px 0px #000000;
-}
-
-.card-top-row {
-  display: flex;
-  justify-content: space-between;
-  font-weight: bold;
-  font-size: 13px;
-}
-
-.card-sub-row {
-  font-style: italic;
-  font-size: 12px;
-  color: #343434;
-  margin-bottom: 6px;
-}
-
-.custom-bullet-points {
-  list-style-type: square;
-  margin-left: 20px;
-}
-
-.custom-bullet-points li {
-  font-size: 12px;
-  margin-bottom: 5px;
-  line-height: 1.5;
-}
-
-.projects-showcase-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-  margin-top: 15px;
-}
-
-.project-module-box {
-  border: 2px solid #000000;
-  background: #ffffff;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  box-shadow: 4px 4px 0px #000000;
-}
-
-.project-tag-line {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 8px;
-}
-
-.badge-tag {
-  border: 1px solid #000000;
-  background: #eeeeee;
-  font-size: 10px;
-  padding: 2px 6px;
-}
+.hero-intro-box { text-align: center; padding: 20px 0 40px 0; }
+.hero-greeting { font-size: 32px; font-weight: bold; margin-bottom: 6px; }
+.hero-subtitle { font-size: 15px; font-weight: bold; color: #333333; margin-bottom: 12px; }
+.status-badge { background: #000000; color: #ffffff; display: inline-block; padding: 4px 12px; font-size: 12px; font-weight: bold; }
+.section-caption-header { font-size: 20px; font-weight: bold; text-transform: uppercase; margin-bottom: 16px; border-left: 6px solid #000000; padding-left: 10px; }
+.paragraph-content { font-size: 13px; line-height: 1.6; margin-bottom: 15px; text-align: justify; }
+.timeline-card { border: 1px solid #000000; padding: 16px; background: #fafafa; margin-bottom: 16px; box-shadow: 3px 3px 0px #000000; }
+.card-top-row { display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; }
+.card-sub-row { font-style: italic; font-size: 12px; color: #343434; margin-bottom: 6px; }
+.custom-bullet-points { list-style-type: square; margin-left: 20px; }
+.custom-bullet-points li { font-size: 12px; margin-bottom: 5px; line-height: 1.5; }
+.projects-showcase-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 15px; }
+.project-module-box { border: 2px solid #000000; background: #ffffff; padding: 16px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 4px 4px 0px #000000; }
+.project-tag-line { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+.badge-tag { border: 1px solid #000000; background: #eeeeee; font-size: 10px; padding: 2px 6px; }

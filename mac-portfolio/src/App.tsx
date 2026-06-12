@@ -6,6 +6,12 @@ export default function App() {
     const [systemTime, setSystemTime] = useState<string>('');
     const [openMenu, setOpenMenu] = useState<OpenMenuKey>(null);
 
+    // Game state parameters
+    const [isBooted, setIsBooted] = useState<boolean>(false);
+    const [isHold, setIsHold] = useState<boolean>(false);
+    const [timeLeft, setTimeLeft] = useState<number>(300); // 5 Minutes in seconds
+    const [isEating, setIsEating] = useState<boolean>(false);
+
     // Synchronize Top Right System Clock
     useEffect(() => {
         const syncClock = () => {
@@ -17,36 +23,89 @@ export default function App() {
         return () => clearInterval(intervalId);
     }, []);
 
-    // Close dropdown menus when clicking anywhere else on the desktop environment
+    // 5 Minute Count Down Game Execution Controller Loop
     useEffect(() => {
-        const dismissMenu = () => setOpenMenu(null);
+        if (!isBooted || isHold || isEating) return;
+
+        if (timeLeft <= 0) {
+            setIsEating(true);
+            return;
+        }
+
+        const counterId = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(counterId);
+    }, [isBooted, isHold, timeLeft, isEating]);
+
+    // AUTOMATIC TIMEOUT BOOTBACK RESET: Kicks recruiter to welcome slide when animation finishes
+    useEffect(() => {
+        if (isEating) {
+            const resetDelayId = setTimeout(() => {
+                setIsBooted(false);   // Drops content and returns back to the original page
+                setIsEating(false);   // Disables active eraser stage
+                setIsHold(false);     // Clears previous pause blocks
+                setTimeLeft(300);     // Fully reloads countdown clock parameters
+            }, 4500);               // Match 4.5s CSS wipe duration
+
+            return () => clearTimeout(resetDelayId);
+        }
+    }, [isEating]);
+
+    // Native DOM listener bypasses click resolution if target lives inside a menu block
+    useEffect(() => {
+        const dismissMenu = (event: MouseEvent) => {
+            const target = event.target as HTMLElement;
+            if (target.closest('.menu-trigger')) {
+                return;
+            }
+            setOpenMenu(null);
+        };
         document.addEventListener('click', dismissMenu);
         return () => document.removeEventListener('click', dismissMenu);
     }, []);
 
     const toggleMenuState = (menuKey: OpenMenuKey, event: React.MouseEvent) => {
-        event.stopPropagation(); // Stop document-level dismissal loop
+        event.stopPropagation();
         setOpenMenu(prev => (prev === menuKey ? null : menuKey));
     };
 
-    // Airtight execution handler that halts bubbling to parent triggers
     const handleActionClick = (event: React.MouseEvent, action: () => void) => {
         event.stopPropagation();
         action();
-        setOpenMenu(null); // Cleanly close menu after action completes
+        setOpenMenu(null);
+    };
+
+    // Safe launcher to unlock screens cleanly
+    const runPortfolioSystem = () => {
+        setIsEating(false);
+        setTimeLeft(300);
+        setIsBooted(true);
     };
 
     const navigateToSection = (elementId: string) => {
-        const targetElement = document.getElementById(elementId);
-        if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth' });
+        if (!isBooted) {
+            runPortfolioSystem();
+            setTimeout(() => {
+                document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        } else {
+            document.getElementById(elementId)?.scrollIntoView({ behavior: 'smooth' });
         }
+    };
+
+    // Convert numbers to double-digit structural displays (e.g., 04:59)
+    const formatTimeDisplay = (totalSeconds: number) => {
+        const mins = Math.floor(totalSeconds / 60);
+        const secs = totalSeconds % 60;
+        return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
     };
 
     return (
         <div className="desktop-environment">
 
-            {/* ================= STATE CONTROLLED MACINTOSH SYSTEM NAVBAR ================= */}
+            {/* ================= MACINTOSH CONTROLLED SYSTEM NAVBAR ================= */}
             <nav className="mac-os-navbar">
                 <div className="nav-dropdown-group">
 
@@ -59,7 +118,7 @@ export default function App() {
               </span>
                             <div className="dropdown-rule"></div>
                             <span className="dropdown-action-item" onClick={(e) => e.stopPropagation()}>
-                OS Mode: State Monitored
+                Subsystem: Ms. Pac-Man Core Active
               </span>
                         </div>
                     </div>
@@ -77,239 +136,292 @@ export default function App() {
                         </div>
                     </div>
 
-                    {/* View Dropdown - BUBBLE FIX IMPLEMENTED */}
+                    {/* View Dropdown */}
                     <div className={`menu-trigger ${openMenu === 'view' ? 'active' : ''}`} onClick={(e) => toggleMenuState('view', e)}>
                         <span>View</span>
                         <div className={`dropdown-menu-list ${openMenu === 'view' ? 'show' : ''}`}>
-              <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => {
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
-                  document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
-              })}>
-                Reset View to Top
+              <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => runPortfolioSystem())}>
+                Unlock & Reveal Full Portfolio
+              </span>
+                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                                document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+                            })}>
+                Reset Scroll View to Top
               </span>
                         </div>
                     </div>
                 </div>
 
-                {/* Live Active Clock Node */}
+                {/* Live Clock Display */}
                 <div style={{ marginLeft: 'auto', fontSize: '12px', fontWeight: 'bold' }}>
                     {systemTime}
                 </div>
             </nav>
 
-            {/* ================= CENTRAL MASTER MAIN INFRASTRUCTURE SHELL ================= */}
+            {/* ================= WORKSTATION DESKTOP MACHINE INNER BODY ================= */}
             <main className="portfolio-mainframe">
                 <div className="mac-os-window-shell">
 
+                    {/* Header Layout Bars */}
                     <div className="window-header-strip">
-                        <div className="window-control-box"></div>
-                        <span className="window-title-banner">Arshdeep_Dubey_Portfolio_Workstation.app</span>
+                        <div className="window-control-box" onClick={() => setIsBooted(false)} style={{cursor: 'pointer'}} title="Reset Workspace"></div>
+                        <span className="window-title-banner">Arshdeep_Dubey_Arcade_Workstation.app</span>
                         <div className="window-control-box" style={{ marginLeft: 'auto', marginRight: '4px' }}></div>
                     </div>
 
-                    <div className="window-scrollable-body">
-
-                        {/* 1. HERO SECTION */}
-                        <section id="home-section" className="portfolio-section-block" style={{ paddingTop: '10px' }}>
-                            <div className="hero-intro-box">
-                                <h1 className="hero-greeting">I'm Arshdeep Dubey</h1>
-                                <p className="hero-subtitle">Software Engineer II @ Fidelity International</p>
-                                <div className="status-badge">STATUS: IMMEDIATE JOINER</div>
-                            </div>
-                        </section>
-
-                        {/* 2. ABOUT NARRATIVE SECTION */}
-                        <section id="about-section" className="portfolio-section-block">
-                            <h2 className="section-caption-header">About Me</h2>
-                            <p className="paragraph-content">
-                                I am a systems developer driven by a keen curiosity for clean enterprise architecture and robust automation paradigms.
-                                With an extensive background across distributed backend engineering, cloud pipeline orchestration, and system optimization,
-                                I focus on refactoring complex structural solutions into maintainable, highly available microservices frameworks.
+                    {/* INTERACTION MATRIX MANAGER */}
+                    {!isBooted ? (
+                        /* INITIAL ARCADE MODE DISPLAY OVERLAY */
+                        <div className="arcade-boot-overlay">
+                            <div className="arcade-title-neon">MS. PAC-MAN</div>
+                            <div className="arcade-subtitle">Portfolio Protection Subsystem v1.02</div>
+                            <p style={{ fontSize: '12px', color: '#dddddd', maxWidth: '500px', lineHeight: '1.6', marginBottom: '24px' }}>
+                                Attention Recruiter: Once initialized, you have exactly 5 minutes to read through my systems resume before Ms. Pac-Man clears the visual frame. Use the "HOLD" toggle button to stop her!
                             </p>
-                            <p className="paragraph-content">
-                                My technical philosophy emphasizes eliminating manual overhead—specializing in the creation of scalable database structures,
-                                reusable automated pipelines, and comprehensive JSON logging matrices to support clear production debugging loops.
-                                I am currently based in Gurugram, India, targeting high-impact backend, cloud-native engineering challenges.
-                            </p>
-
-                            <div style={{ marginTop: '20px' }}>
-                                <p style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '8px' }}>Core Runtime Skill Matrix:</p>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                    <div>
-                                        <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Languages: </span>
-                                        {['C', 'HTML', 'Java', 'JavaScript', 'Python', 'PL/SQL', 'SQL', 'TypeScript'].map(lang => (
-                                            <span key={lang} className="badge-tag" style={{ marginRight: '4px' }}>{lang}</span>
-                                        ))}
-                                    </div>
-                                    <div>
-                                        <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Tools & Frameworks: </span>
-                                        {['Argo CD', 'AWS', 'Git', 'GitHub', 'GitHub Actions', 'Harbor', 'Helm', 'Jenkins', 'Nexus', 'Snap Logic'].map(tool => (
-                                            <span key={tool} className="badge-tag" style={{ marginRight: '4px' }}>{tool}</span>
-                                        ))}
-                                    </div>
+                            <button className="arcade-insert-coin-btn" onClick={runPortfolioSystem}>
+                                🕹️ CLICK TO VIEW PORTFOLIO
+                            </button>
+                            <div style={{ color: '#ff007f', fontSize: '11px', fontWeight: 'bold', animation: 'blink-text 1s infinite alternate' }}>
+                                READY TO INITIALIZE ENGINE RUNTIMES
+                            </div>
+                        </div>
+                    ) : (
+                        /* FULL PORTFOLIO CONTAINER LOGIC WITH RE-INJECTED ERASE STAGES */
+                        <>
+                            {/* Floating Game Control Dashboard Block */}
+                            <div className="pacman-dashboard-widget">
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span style={{ fontSize: '16px' }}>ᗧ</span>
+                                    <span>MS. PAC-MAN STATUS: {isHold ? "⏸️ INJECTED HOLD STATE" : "🏃 CHOMPING ENGINE RUNNING"}</span>
+                                </div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                  <span style={{ fontSize: '13px', background: '#000000', color: '#fffb15', padding: '2px 8px' }}>
+                    ERASE COUNTDOWN: {formatTimeDisplay(timeLeft)}
+                  </span>
+                                    <button
+                                        className={`hold-toggle-button ${isHold ? 'active-hold' : ''}`}
+                                        onClick={() => setIsHold(!isHold)}
+                                    >
+                                        {isHold ? "▶️ RESUME COUNTDOWN" : "⏸️ CLICK TO HOLD TEXT"}
+                                    </button>
                                 </div>
                             </div>
-                        </section>
 
-                        {/* 3. EXPERIENCE TRACKS SECTION */}
-                        <section id="experience-section" className="portfolio-section-block">
-                            <h2 className="section-caption-header">Professional History</h2>
-                            <div className="timeline-card-wrapper">
+                            <div className="window-scrollable-body">
 
-                                <div className="timeline-card">
-                                    <div className="card-top-row">
-                                        <span>Fidelity International, Gurgaon (On-site)</span>
-                                        <span>2023 – Present</span>
+                                {/* ACTIVE CHOMP WIPER OVERLAY: Runs right on top of content to eat it blank */}
+                                {isEating && (
+                                    <div className="active-eating-stage-overlay">
+                                        <div className="eating-black-blanket"></div>
+                                        <div className="pacman-live-chomper">ᗧ••••</div>
                                     </div>
-                                    <div className="card-sub-row">Software Engineer II</div>
-                                    <ul className="custom-bullet-points">
-                                        <li>Decoupled legacy monolithic Spring Boot applications by refactoring WAR deployments into distributed, cloud-native JAR microservices, centralizing business logic and version control in a unified repository architecture.</li>
-                                        <li>Engineered reusable Jenkins pipelines to automate the secure generation and lifecycle rotation of migrated on-premise database schema passwords into AWS Secrets Manager utilizing cross-account IAM Role ARNs.</li>
-                                        <li>Triaged high-severity production incidents for mission-critical enterprise integrations, conducting root-cause analysis (RCA) and collaborating with cross-functional stakeholders to align engineering fixes with complex domain workflows.</li>
-                                    </ul>
-                                </div>
+                                )}
 
-                                <div className="timeline-card">
-                                    <div className="card-top-row">
-                                        <span>Fidelity International, Gurgaon (On-site)</span>
-                                        <span>2022 – 2023</span>
+                                {/* 1. HERO SECTION */}
+                                <section id="home-section" className="portfolio-section-block" style={{ paddingTop: '10px' }}>
+                                    <div className="hero-intro-box">
+                                        <h1 className="hero-greeting">I'm Arshdeep Dubey</h1>
+                                        <p className="hero-subtitle">Software Engineer II @ Fidelity International</p>
+                                        <div className="status-badge">STATUS: IMMEDIATE JOINER</div>
                                     </div>
-                                    <div className="card-sub-row">Software Engineer I</div>
-                                    <ul className="custom-bullet-points">
-                                        <li>Implemented structured JSON logging across Java microservices to stream application logs into ELK Dashboard for automated health tracking and production debugging.</li>
-                                        <li>Designed end-to-end SnapLogic integration pipelines utilizing Mapper and Execute Snaps to orchestrate data transfers between APIs, SQL databases, and internal file-managed services.</li>
-                                        <li>Developed custom Java integration connectors implementing OAuth 2.0 flows to ingest API payloads, execute schema validation, and serialize structured data into Oracle relational databases.</li>
-                                    </ul>
-                                </div>
+                                </section>
 
-                                <div className="timeline-card">
-                                    <div className="card-top-row">
-                                        <span>Samsung PRISM, Bangalore (Hybrid)</span>
-                                        <span>2021 – 2022</span>
+                                {/* 2. ABOUT SECTION */}
+                                <section id="about-section" className="portfolio-section-block">
+                                    <h2 className="section-caption-header">About Me</h2>
+                                    <p className="paragraph-content">
+                                        I am a systems developer driven by a keen curiosity for clean enterprise architecture and robust automation paradigms.
+                                        With an extensive background across distributed backend engineering, cloud pipeline orchestration, and system optimization,
+                                        I focus on refactoring complex structural solutions into maintainable, highly available microservices frameworks.
+                                    </p>
+                                    <p className="paragraph-content">
+                                        My technical philosophy emphasizes eliminating manual overhead—specializing in the creation of scalable database structures,
+                                        reusable automated pipelines, and comprehensive JSON logging matrices to support clear production debugging loops.
+                                        I am currently based in Gurugram, India, targeting high-impact backend, cloud-native engineering challenges.
+                                    </p>
+
+                                    <div style={{ marginTop: '20px' }}>
+                                        <p style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '8px' }}>Core Runtime Skill Matrix:</p>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                            <div>
+                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Languages: </span>
+                                                {['C', 'HTML', 'Java', 'JavaScript', 'Python', 'PL/SQL', 'SQL', 'TypeScript'].map(lang => (
+                                                    <span key={lang} className="badge-tag" style={{ marginRight: '4px' }}>{lang}</span>
+                                                ))}
+                                            </div>
+                                            <div>
+                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Tools & Frameworks: </span>
+                                                {['Argo CD', 'AWS', 'Git', 'GitHub', 'GitHub Actions', 'Harbor', 'Helm', 'Jenkins', 'Nexus', 'Snap Logic'].map(tool => (
+                                                    <span key={tool} className="badge-tag" style={{ marginRight: '4px' }}>{tool}</span>
+                                                ))}
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="card-sub-row">Research Intern</div>
-                                    <ul className="custom-bullet-points">
-                                        <li>Developed optimized noise reduction filter based on image/video streaming using OpenCV, Python, and C++.</li>
-                                    </ul>
-                                </div>
+                                </section>
+
+                                {/* 3. EXPERIENCE SECTION */}
+                                <section id="experience-section" className="portfolio-section-block">
+                                    <h2 className="section-caption-header">Professional History</h2>
+                                    <div className="timeline-card-wrapper">
+
+                                        <div className="timeline-card">
+                                            <div className="card-top-row">
+                                                <span>Fidelity International, Gurgaon (On-site)</span>
+                                                <span>2023 – Present</span>
+                                            </div>
+                                            <div className="card-sub-row">Software Engineer II</div>
+                                            <ul className="custom-bullet-points">
+                                                <li>Decoupled legacy monolithic Spring Boot applications by refactoring WAR deployments into distributed, cloud-native JAR microservices, centralizing business logic and version control in a unified repository architecture.</li>
+                                                <li>Engineered reusable Jenkins pipelines to automate the secure generation and lifecycle rotation of migrated on-premise database schema passwords into AWS Secrets Manager utilizing cross-account IAM Role ARNs.</li>
+                                                <li>Triaged high-severity production incidents for mission-critical enterprise integrations, conducting root-cause analysis (RCA) and collaborating with cross-functional stakeholders to align engineering fixes with complex domain workflows.</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="timeline-card">
+                                            <div className="card-top-row">
+                                                <span>Fidelity International, Gurgaon (On-site)</span>
+                                                <span>2022 – 2023</span>
+                                            </div>
+                                            <div className="card-sub-row">Software Engineer I</div>
+                                            <ul className="custom-bullet-points">
+                                                <li>Implemented structured JSON logging across Java microservices to stream application logs into ELK Dashboard for automated health tracking and production debugging.</li>
+                                                <li>Designed end-to-end SnapLogic integration pipelines utilizing Mapper and Execute Snaps to orchestrate data transfers between APIs, SQL databases, and internal file-managed services.</li>
+                                                <li>Developed custom Java integration connectors implementing OAuth 2.0 flows to ingest API payloads, execute schema validation, and serialize structured data into Oracle relational databases.</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="timeline-card">
+                                            <div className="card-top-row">
+                                                <span>Samsung PRISM, Bangalore (Hybrid)</span>
+                                                <span>2021 – 2022</span>
+                                            </div>
+                                            <div className="card-sub-row">Research Intern</div>
+                                            <ul className="custom-bullet-points">
+                                                <li>Developed optimized noise reduction filter based on image/video streaming using OpenCV, Python, and C++.</li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </section>
+
+                                {/* 4. PROJECTS SECTION */}
+                                <section id="projects-section" className="portfolio-section-block">
+                                    <h2 className="section-caption-header">Latest Applications</h2>
+                                    <div className="projects-showcase-grid">
+
+                                        <div className="project-module-box">
+                                            <div>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Semantic Sentiment Recommendation</h3>
+                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
+                                                    Built using a Microsoft LLM model trained on Kaggle datasets, utilizing advanced search and refinement techniques to recommend anime based on user sentiment.
+                                                </p>
+                                            </div>
+                                            <div className="project-tag-line">
+                                                <span className="badge-tag">LLM</span>
+                                                <span className="badge-tag">Python</span>
+                                                <span className="badge-tag">Semantic Search</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="project-module-box">
+                                            <div>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Site Connectivity Checker</h3>
+                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
+                                                    Python-based utility for logging and monitoring the liveliness and readiness of consumer-facing web platforms.
+                                                </p>
+                                            </div>
+                                            <div className="project-tag-line">
+                                                <span className="badge-tag">Python</span>
+                                                <span className="badge-tag">Automation</span>
+                                                <span className="badge-tag">Monitoring</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="project-module-box">
+                                            <div>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Relax Staying Microservice</h3>
+                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
+                                                    SpringBoot microservice, Thymeleaf, and MongoDB enabling users to browse and book hotel accommodations by geographic location.
+                                                </p>
+                                            </div>
+                                            <div className="project-tag-line">
+                                                <span className="badge-tag">SpringBoot</span>
+                                                <span className="badge-tag">MongoDB</span>
+                                                <span className="badge-tag">Thymeleaf</span>
+                                            </div>
+                                        </div>
+
+                                        <div className="project-module-box">
+                                            <div>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>aws-iac-functions</h3>
+                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
+                                                    Infrastructure maintenance repository showcasing practical utilization of AWS offerings including DynamoDB, S3, Lambda, VPC, and CloudWatch.
+                                                </p>
+                                            </div>
+                                            <div className="project-tag-line">
+                                                <span className="badge-tag">AWS</span>
+                                                <span className="badge-tag">Infrastructure-as-Code</span>
+                                                <span className="badge-tag">Serverless</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </section>
+
+                                {/* 5. EDUCATION SECTION */}
+                                <section id="education-section" className="portfolio-section-block">
+                                    <h2 className="section-caption-header">Education</h2>
+                                    <div className="timeline-card-wrapper">
+
+                                        <div className="timeline-card">
+                                            <div className="card-top-row">
+                                                <span>IIT Ropar | Masai</span>
+                                                <span>2024 – 2026</span>
+                                            </div>
+                                            <div className="card-sub-row">Major in AI (specialization in Deep Learning, Vector Embedding and Prompt Engineering)</div>
+                                            <p style={{ fontSize: '12px', marginTop: '4px' }}><b>CGPA Score:</b> 4.7</p>
+                                        </div>
+
+                                        <div className="timeline-card">
+                                            <div className="card-top-row">
+                                                <span>ITER Siksha 'O' Anusandhan University, Bhubaneswar</span>
+                                                <span>2019 – 2023</span>
+                                            </div>
+                                            <div className="card-sub-row">B.Tech in Computer Science</div>
+                                            <p style={{ fontSize: '12px', marginTop: '4px' }}><b>CGPA Score:</b> 8.73</p>
+                                        </div>
+
+                                    </div>
+                                </section>
+
+                                {/* 6. CONTACT SECTION */}
+                                <section id="contact-section" className="portfolio-section-block" style={{ textAlign: 'center' }}>
+                                    <h2 className="section-caption-header" style={{ borderLeft: 'none', paddingLeft: 0 }}>Let's Get in Touch</h2>
+                                    <p className="paragraph-content" style={{ textAlign: 'center', marginBottom: '25px' }}>
+                                        My inbox is always open. Connect with me through any of my official engineering vector nodes:
+                                    </p>
+
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px', marginTop: '10px' }}>
+                                        <a href="mailto:1941012662.arshdeep@gmail.com" className="status-badge" style={{ textDecoration: 'none' }}>
+                                            📬 EMAIL PIPELINE
+                                        </a>
+                                        <a href="https://linkedin.com/in/dubey-arshdeep" target="_blank" rel="noreferrer" className="status-badge" style={{ textDecoration: 'none', background: '#ffffff', color: '#000000', border: '1px solid #000000' }}>
+                                            🔗 LINKEDIN
+                                        </a>
+                                        <a href="https://github.com/Arshdeepdubey" target="_blank" rel="noreferrer" className="status-badge" style={{ textDecoration: 'none', background: '#ffffff', color: '#000000', border: '1px solid #000000' }}>
+                                            🐙 GITHUB
+                                        </a>
+                                        <a href="https://x.com/Arshdeep_dubey" target="_blank" rel="noreferrer" className="status-badge" style={{ textDecoration: 'none', background: '#ffffff', color: '#000000', border: '1px solid #000000' }}>
+                                            🐦 TWITTER / X
+                                        </a>
+                                    </div>
+                                </section>
 
                             </div>
-                        </section>
+                        </>
+                    )}
 
-                        {/* 4. TECHNICAL ARTIFACTS SECTION */}
-                        <section id="projects-section" className="portfolio-section-block">
-                            <h2 className="section-caption-header">Latest Applications</h2>
-                            <div className="projects-showcase-grid">
-
-                                <div className="project-module-box">
-                                    <div>
-                                        <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Semantic Sentiment Recommendation</h3>
-                                        <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                            Built using a Microsoft LLM model trained on Kaggle datasets, utilizing advanced search and refinement techniques to recommend anime based on user sentiment.
-                                        </p>
-                                    </div>
-                                    <div className="project-tag-line">
-                                        <span className="badge-tag">LLM</span>
-                                        <span className="badge-tag">Python</span>
-                                        <span className="badge-tag">Semantic Search</span>
-                                    </div>
-                                </div>
-
-                                <div className="project-module-box">
-                                    <div>
-                                        <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Site Connectivity Checker</h3>
-                                        <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                            Python-based utility for logging and monitoring the liveliness and readiness of consumer-facing web platforms.
-                                        </p>
-                                    </div>
-                                    <div className="project-tag-line">
-                                        <span className="badge-tag">Python</span>
-                                        <span className="badge-tag">Automation</span>
-                                        <span className="badge-tag">Monitoring</span>
-                                    </div>
-                                </div>
-
-                                <div className="project-module-box">
-                                    <div>
-                                        <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Relax Staying Microservice</h3>
-                                        <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                            SpringBoot microservice, Thymeleaf, and MongoDB enabling users to browse and book hotel accommodations by geographic location.
-                                        </p>
-                                    </div>
-                                    <div className="project-tag-line">
-                                        <span className="badge-tag">SpringBoot</span>
-                                        <span className="badge-tag">MongoDB</span>
-                                        <span className="badge-tag">Thymeleaf</span>
-                                    </div>
-                                </div>
-
-                                <div className="project-module-box">
-                                    <div>
-                                        <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>aws-iac-functions</h3>
-                                        <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                            Infrastructure maintenance repository showcasing practical utilization of AWS offerings including DynamoDB, S3, Lambda, VPC, and CloudWatch.
-                                        </p>
-                                    </div>
-                                    <div className="project-tag-line">
-                                        <span className="badge-tag">AWS</span>
-                                        <span className="badge-tag">Infrastructure-as-Code</span>
-                                        <span className="badge-tag">Serverless</span>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </section>
-
-                        {/* 5. ACADEMIC HISTORIES SECTION */}
-                        <section id="education-section" className="portfolio-section-block">
-                            <h2 className="section-caption-header">Education</h2>
-                            <div className="timeline-card-wrapper">
-
-                                <div className="timeline-card">
-                                    <div className="card-top-row">
-                                        <span>IIT Ropar | Masai</span>
-                                        <span>2024 – 2026</span>
-                                    </div>
-                                    <div className="card-sub-row">Major in AI (specialization in Deep Learning, Vector Embedding and Prompt Engineering)</div>
-                                    <p style={{ fontSize: '12px', marginTop: '4px' }}><b>CGPA Score:</b> 4.7</p>
-                                </div>
-
-                                <div className="timeline-card">
-                                    <div className="card-top-row">
-                                        <span>ITER Siksha 'O' Anusandhan University, Bhubaneswar</span>
-                                        <span>2019 – 2023</span>
-                                    </div>
-                                    <div className="card-sub-row">B.Tech in Computer Science</div>
-                                    <p style={{ fontSize: '12px', marginTop: '4px' }}><b>CGPA Score:</b> 8.73</p>
-                                </div>
-
-                            </div>
-                        </section>
-
-                        {/* 6. COMMUNICATIONS SECTION */}
-                        <section id="contact-section" className="portfolio-section-block" style={{ textAlign: 'center' }}>
-                            <h2 className="section-caption-header" style={{ borderLeft: 'none', paddingLeft: 0 }}>Let's Get in Touch</h2>
-                            <p className="paragraph-content" style={{ textAlign: 'center', marginBottom: '25px' }}>
-                                My inbox is always open. Connect with me through any of my official engineering vector nodes:
-                            </p>
-
-                            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px', marginTop: '10px' }}>
-                                <a href="mailto:1941012662.arshdeep@gmail.com" className="status-badge" style={{ textDecoration: 'none' }}>
-                                    📬 EMAIL PIPELINE
-                                </a>
-                                <a href="https://linkedin.com/in/dubey-arshdeep" target="_blank" rel="noreferrer" className="status-badge" style={{ textDecoration: 'none', background: '#ffffff', color: '#000000', border: '1px solid #000000' }}>
-                                    🔗 LINKEDIN
-                                </a>
-                                <a href="https://github.com/Arshdeepdubey" target="_blank" rel="noreferrer" className="status-badge" style={{ textDecoration: 'none', background: '#ffffff', color: '#000000', border: '1px solid #000000' }}>
-                                    🐙 GITHUB
-                                </a>
-                                <a href="https://x.com/Arshdeep_dubey" target="_blank" rel="noreferrer" className="status-badge" style={{ textDecoration: 'none', background: '#ffffff', color: '#000000', border: '1px solid #000000' }}>
-                                    🐦 TWITTER / X
-                                </a>
-                            </div>
-                        </section>
-
-                    </div>
                 </div>
             </main>
         </div>
