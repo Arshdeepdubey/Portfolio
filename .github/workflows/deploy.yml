@@ -17,8 +17,7 @@ jobs:
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
         with:
-          node-on-version: 20
-          cache: 'npm'
+          node-on-version: '18'
 
       - name: Install Project Dependencies
         run: npm ci
