@@ -72,7 +72,10 @@ Deployment notes (GitHub Pages simple flow)
 1. Build the app: `npm run build`.
 2. Commit the `dist/` (or serve it via GitHub Pages action). A common approach is to use a GitHub Action to build and push the production output to the `gh-pages` branch.
 
-Example GitHub Action (workflow) is omitted here but can be added on request.
+CI/workflows in this repository
+
+- Active workflow (kept): `.github/workflows/deploy.yml` at the repository root. This workflow builds the `mac-portfolio` project and deploys `mac-portfolio/dist` to the `gh-pages` branch. It triggers on pushes to `arsh-portfolio-setup` and `main`.
+- Duplicate removed: `mac-portfolio/.github/workflows/deploy.yml` was deleted during cleanup so there is a single canonical deploy pipeline.
 
 Contact
 
