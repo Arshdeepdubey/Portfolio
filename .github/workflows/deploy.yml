@@ -1,0 +1,33 @@
+name: Deploy Portfolio to GitHub Pages
+
+on:
+  push:
+    branches: [ main ] # Triggers the pipeline on every push to main
+
+permissions:
+  contents: write # Allows the action to commit build artifacts to the gh-pages branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v4
+        with:
+          node-on-version: 20
+          cache: 'npm'
+
+      - name: Install Project Dependencies
+        run: npm ci
+
+      - name: Compile Code and Build Production Static Site
+        run: npm run build
+
+      - name: Push Build Output to GitHub Pages Branch
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: dist # Vite outputs the compiled bundle into a folder named 'dist'
+          branch: gh-pages # The destination branch where the hosting files live
