@@ -2,7 +2,7 @@ name: Deploy Portfolio to GitHub Pages
 
 on:
   push:
-    branches: [ main ] # Triggers the pipeline on every push to main
+    branches: [ arsh-portfolio-setup, main ] # Triggers the pipeline on every push to main
 
 permissions:
   contents: write # Allows the action to commit build artifacts to the gh-pages branch
