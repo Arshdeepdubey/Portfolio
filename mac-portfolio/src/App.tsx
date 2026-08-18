@@ -132,7 +132,8 @@ export default function App() {
                             <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('experience-section'))}>3. Experience Log</span>
                             <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('projects-section'))}>4. Technical Artifacts</span>
                             <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('education-section'))}>5. Academic History</span>
-                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('contact-section'))}>6. Link Communications</span>
+                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('certifications-section'))}>6. Awards & Certifications</span>
+                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('contact-section'))}>7. Link Communications</span>
                         </div>
                     </div>
 
@@ -245,15 +246,27 @@ export default function App() {
                                         <p style={{ fontWeight: 'bold', fontSize: '13px', marginBottom: '8px' }}>Core Runtime Skill Matrix:</p>
                                         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                                             <div>
-                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Languages: </span>
-                                                {['C', 'HTML', 'Java', 'JavaScript', 'Python', 'PL/SQL', 'SQL', 'TypeScript'].map(lang => (
+                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Programming & Scripting: </span>
+                                                {['Python', 'Java', 'Bash/Shell', 'SQL (Oracle)', 'HTML/CSS', 'JavaScript (Node.js)'].map(lang => (
                                                     <span key={lang} className="badge-tag" style={{ marginRight: '4px' }}>{lang}</span>
                                                 ))}
                                             </div>
                                             <div>
-                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Tools & Frameworks: </span>
-                                                {['Argo CD', 'AWS', 'Git', 'GitHub', 'GitHub Actions', 'Harbor', 'Helm', 'Jenkins', 'Nexus', 'Snap Logic'].map(tool => (
+                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Cloud Infrastructure & DevOps: </span>
+                                                {['AWS (S3/IAM/EC2/EKS)', 'Terraform', 'Docker', 'Kubernetes', 'Helm', 'ArgoCD', 'Harbor', 'Jenkins', 'GitOps'].map(tool => (
                                                     <span key={tool} className="badge-tag" style={{ marginRight: '4px' }}>{tool}</span>
+                                                ))}
+                                            </div>
+                                            <div>
+                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>Frameworks & Integration: </span>
+                                                {['SnapLogic', 'REST APIs', 'ELK Stack (Kibana)', 'MongoDB', 'Maven', 'Spring Boot', 'Git'].map(fw => (
+                                                    <span key={fw} className="badge-tag" style={{ marginRight: '4px' }}>{fw}</span>
+                                                ))}
+                                            </div>
+                                            <div>
+                                                <span style={{ fontSize: '12px', fontWeight: 'bold' }}>IT Operations & Support: </span>
+                                                {['Incident Management', 'Root Cause Analysis (RCA)', 'Tier-1/2 Support', 'SLA Adherence'].map(ops => (
+                                                    <span key={ops} className="badge-tag" style={{ marginRight: '4px' }}>{ops}</span>
                                                 ))}
                                             </div>
                                         </div>
@@ -267,38 +280,50 @@ export default function App() {
 
                                         <div className="timeline-card">
                                             <div className="card-top-row">
-                                                <span>Fidelity International, Gurgaon (On-site)</span>
-                                                <span>2023 – Present</span>
+                                                <span>Fidelity International, Gurugram (On-site)</span>
+                                                <span>October 2025 – July 2026</span>
                                             </div>
                                             <div className="card-sub-row">Software Engineer II</div>
                                             <ul className="custom-bullet-points">
-                                                <li>Decoupled legacy monolithic Spring Boot applications by refactoring WAR deployments into distributed, cloud-native JAR microservices, centralizing business logic and version control in a unified repository architecture.</li>
-                                                <li>Engineered reusable Jenkins pipelines to automate the secure generation and lifecycle rotation of migrated on-premise database schema passwords into AWS Secrets Manager utilizing cross-account IAM Role ARNs.</li>
-                                                <li>Triaged high-severity production incidents for mission-critical enterprise integrations, conducting root-cause analysis (RCA) and collaborating with cross-functional stakeholders to align engineering fixes with complex domain workflows.</li>
+                                                <li><b>Owned</b> the cross-cutting ELK Observability Epic across <b>12 cloud microservices</b>; standardized custom JSON logging schemas and Kibana dashboards, boosting log traceability by <b>30%</b> and reducing production incident MTTR by <b>40%</b>.</li>
+                                                <li><b>Engineered</b> an automated secret creation pipeline in Terraform, AWS Secrets Manager, and Jenkins while establishing GitOps workflows with Helm, ArgoCD, and Docker to decouple code/config, cutting deployment overhead by <b>40%</b>.</li>
+                                                <li><b>Architected</b> enterprise ODS Data Lifecycle Pipelines using Java, SnapLogic, and Terraform to automate data archival and retrieval across AWS RDS, S3, and Glacier, optimizing cloud storage costs while enforcing strict compliance SLAs.</li>
                                             </ul>
                                         </div>
 
                                         <div className="timeline-card">
                                             <div className="card-top-row">
-                                                <span>Fidelity International, Gurgaon (On-site)</span>
-                                                <span>2022 – 2023</span>
+                                                <span>Fidelity International, Gurugram (On-site)</span>
+                                                <span>August 2024 – October 2025</span>
                                             </div>
-                                            <div className="card-sub-row">Software Engineer I</div>
+                                            <div className="card-sub-row">Software Engineer</div>
                                             <ul className="custom-bullet-points">
-                                                <li>Implemented structured JSON logging across Java microservices to stream application logs into ELK Dashboard for automated health tracking and production debugging.</li>
-                                                <li>Designed end-to-end SnapLogic integration pipelines utilizing Mapper and Execute Snaps to orchestrate data transfers between APIs, SQL databases, and internal file-managed services.</li>
-                                                <li>Developed custom Java integration connectors implementing OAuth 2.0 flows to ingest API payloads, execute schema validation, and serialize structured data into Oracle relational databases.</li>
+                                                <li><b>Solely engineered</b> and deployed <b>20+ production ETL pipelines</b> in SnapLogic for cloud migration, authoring <b>10+ reusable templates</b> adopted portfolio-wide that enhanced engineering team productivity by <b>50%</b>.</li>
+                                                <li><b>Developed</b> high-throughput Java/Spring Boot data connectors (REST-to-S3, DB-to-S3) processing over <b>10,000 million records daily</b>, while managing production deployments and on-call rotations to consistently maintain strict SLA targets.</li>
+                                                <li><b>Implemented</b> Zero-Trust cloud security modules in Terraform, automating secret lifecycle management in AWS Secrets Manager, CyberArk certificate renewals, and cross-account IRSA roles for EKS workloads.</li>
                                             </ul>
                                         </div>
 
                                         <div className="timeline-card">
                                             <div className="card-top-row">
-                                                <span>Samsung PRISM, Bangalore (Hybrid)</span>
-                                                <span>2021 – 2022</span>
+                                                <span>Fidelity International, Gurugram (On-site)</span>
+                                                <span>August 2023 – August 2024</span>
                                             </div>
-                                            <div className="card-sub-row">Research Intern</div>
+                                            <div className="card-sub-row">Associate Software Engineer</div>
                                             <ul className="custom-bullet-points">
-                                                <li>Developed optimized noise reduction filter based on image/video streaming using OpenCV, Python, and C++.</li>
+                                                <li><b>Developed</b> a full-stack travel booking platform from scratch using Spring Boot, Maven, Thymeleaf, and MongoDB, and contributed to a Node.js NFT minting bot for automated, decentralized voucher distribution.</li>
+                                                <li><b>Integrated</b> Microsoft Graph API with OAuth 2.0 and SMTP authentication to engineer an automated organizational messaging engine, eliminating <b>2–3 days</b> of auth integration boilerplate and maintaining high platform uptime.</li>
+                                            </ul>
+                                        </div>
+
+                                        <div className="timeline-card">
+                                            <div className="card-top-row">
+                                                <span>Samsung R&D Institute India, Bangalore</span>
+                                                <span>June 2021 – January 2022</span>
+                                            </div>
+                                            <div className="card-sub-row">Computer Vision Research Intern</div>
+                                            <ul className="custom-bullet-points">
+                                                <li><b>Developed</b> real-time noise reduction pipelines for live image and video streams using Python and OpenCV, applying spatial filtering techniques to enhance frame clarity for low-latency automated detection systems.</li>
                                             </ul>
                                         </div>
 
@@ -312,57 +337,89 @@ export default function App() {
 
                                         <div className="project-module-box">
                                             <div>
-                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Semantic Sentiment Recommendation</h3>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>its-your-own-finance-buddy-chandler</h3>
                                                 <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                                    Built using a Microsoft LLM model trained on Kaggle datasets, utilizing advanced search and refinement techniques to recommend anime based on user sentiment.
+                                                    Designed a modular microservices platform implementing global error handling, dynamic environment configurations, and API fault-tolerance mechanisms. Streamlined inter-service communication workflows to ensure reliable payload delivery across distributed endpoints.
                                                 </p>
                                             </div>
                                             <div className="project-tag-line">
+                                                <span className="badge-tag">Java</span>
+                                                <span className="badge-tag">Spring Boot</span>
+                                                <span className="badge-tag">Microservices</span>
+                                                <a href="https://github.com/Arshdeepdubey/its-your-own-finance-buddy-chandler" target="_blank" rel="noreferrer" style={{ textDecoration: 'none', marginLeft: '4px' }}>
+                                                    <span className="badge-tag" style={{ background: '#fff', color: '#000', border: '1px solid #000', cursor: 'pointer' }}>GitHub</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div className="project-module-box">
+                                            <div>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>config-of-our-finance-buddy-chandler</h3>
+                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
+                                                    Built centralized configuration and service-discovery management modules. Optimized multi-tier deployment settings and environment variable pipelines to improve system start-up efficiency.
+                                                </p>
+                                            </div>
+                                            <div className="project-tag-line">
+                                                <span className="badge-tag">Python</span>
+                                                <span className="badge-tag">PyTorch</span>
+                                                <span className="badge-tag">Computer Vision</span>
+                                                <a href="https://github.com/Arshdeepdubey/config-of-our-finance-buddy-chandler" target="_blank" rel="noreferrer" style={{ textDecoration: 'none', marginLeft: '4px' }}>
+                                                    <span className="badge-tag" style={{ background: '#fff', color: '#000', border: '1px solid #000', cursor: 'pointer' }}>GitHub</span>
+                                                </a>
+                                            </div>
+                                        </div>
+
+                                        <div className="project-module-box">
+                                            <div>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>MoodMatch</h3>
+                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
+                                                    Production-ready, AI-powered anime recommendation engine combining facial emotion detection, 3-model ensemble intelligence, multi-turn conversational AI, and context-aware ranking—serving 1,000+ concurrent users with &lt;250ms response time across Docker, local, and cloud deployments.
+                                                </p>
+                                            </div>
+                                            <div className="project-tag-line">
+                                                <span className="badge-tag">Python</span>
+                                                <span className="badge-tag">Docker</span>
+                                                <span className="badge-tag">FAISS</span>
                                                 <span className="badge-tag">LLM</span>
-                                                <span className="badge-tag">Python</span>
-                                                <span className="badge-tag">Semantic Search</span>
+                                                <a href="https://github.com/Arshdeepdubey/MoodMatch" target="_blank" rel="noreferrer" style={{ textDecoration: 'none', marginLeft: '4px' }}>
+                                                    <span className="badge-tag" style={{ background: '#fff', color: '#000', border: '1px solid #000', cursor: 'pointer' }}>GitHub</span>
+                                                </a>
                                             </div>
                                         </div>
 
                                         <div className="project-module-box">
                                             <div>
-                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Site Connectivity Checker</h3>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>active-vulnerability-plugin</h3>
                                                 <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                                    Python-based utility for logging and monitoring the liveliness and readiness of consumer-facing web platforms.
+                                                    Built Active Vulnerability Hunter—a real-time GitHub Copilot CLI security plugin that fetches critical vulnerabilities from GitHub's database—and established production infrastructure with automated testing, linting, and CI/CD pipelines for secure, efficient vulnerability tracking.
                                                 </p>
                                             </div>
                                             <div className="project-tag-line">
-                                                <span className="badge-tag">Python</span>
-                                                <span className="badge-tag">Automation</span>
-                                                <span className="badge-tag">Monitoring</span>
+                                                <span className="badge-tag">GitHub Copilot CLI</span>
+                                                <span className="badge-tag">Node.js</span>
+                                                <span className="badge-tag">GitHub Actions</span>
+                                                <span className="badge-tag">MCP</span>
+                                                <a href="https://github.com/Arshdeepdubey/active-vulnerability-plugin" target="_blank" rel="noreferrer" style={{ textDecoration: 'none', marginLeft: '4px' }}>
+                                                    <span className="badge-tag" style={{ background: '#fff', color: '#000', border: '1px solid #000', cursor: 'pointer' }}>GitHub</span>
+                                                </a>
                                             </div>
                                         </div>
 
                                         <div className="project-module-box">
                                             <div>
-                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>Relax Staying Microservice</h3>
+                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>microsoft-graph-sendMail</h3>
                                                 <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                                    SpringBoot microservice, Thymeleaf, and MongoDB enabling users to browse and book hotel accommodations by geographic location.
+                                                    Engineered a production-ready Node.js email notification service featuring Microsoft Graph API, OAuth 2.0, and automated CI/CD pipelines; created a reusable drop-in template that reduced auth integration boilerplate by 2–3 days.
                                                 </p>
                                             </div>
                                             <div className="project-tag-line">
-                                                <span className="badge-tag">SpringBoot</span>
-                                                <span className="badge-tag">MongoDB</span>
-                                                <span className="badge-tag">Thymeleaf</span>
-                                            </div>
-                                        </div>
-
-                                        <div className="project-module-box">
-                                            <div>
-                                                <h3 style={{ fontSize: '14px', fontWeight: 'bold' }}>aws-iac-functions</h3>
-                                                <p style={{ fontSize: '11px', marginTop: '6px', color: '#222222' }}>
-                                                    Infrastructure maintenance repository showcasing practical utilization of AWS offerings including DynamoDB, S3, Lambda, VPC, and CloudWatch.
-                                                </p>
-                                            </div>
-                                            <div className="project-tag-line">
-                                                <span className="badge-tag">AWS</span>
-                                                <span className="badge-tag">Infrastructure-as-Code</span>
-                                                <span className="badge-tag">Serverless</span>
+                                                <span className="badge-tag">Microsoft Graph API</span>
+                                                <span className="badge-tag">JavaScript</span>
+                                                <span className="badge-tag">OAuth2</span>
+                                                <span className="badge-tag">CI/CD</span>
+                                                <a href="https://github.com/Arshdeepdubey/microsoft-graph-sendMail" target="_blank" rel="noreferrer" style={{ textDecoration: 'none', marginLeft: '4px' }}>
+                                                    <span className="badge-tag" style={{ background: '#fff', color: '#000', border: '1px solid #000', cursor: 'pointer' }}>GitHub</span>
+                                                </a>
                                             </div>
                                         </div>
 
@@ -377,25 +434,58 @@ export default function App() {
                                         <div className="timeline-card">
                                             <div className="card-top-row">
                                                 <span>IIT Ropar | Masai</span>
-                                                <span>2024 – 2026</span>
+                                                <span>September 2024 – February 2026</span>
                                             </div>
-                                            <div className="card-sub-row">Major in AI (specialization in Deep Learning, Vector Embedding and Prompt Engineering)</div>
+                                            <div className="card-sub-row">Major in Artificial Intelligence</div>
+                                            <p style={{ fontSize: '12px', marginTop: '4px' }}><b>Specialization:</b> Deep Learning, Vector Embedding, Prompt Engineering</p>
                                             <p style={{ fontSize: '12px', marginTop: '4px' }}><b>CGPA Score:</b> 4.7</p>
                                         </div>
 
                                         <div className="timeline-card">
                                             <div className="card-top-row">
                                                 <span>ITER Siksha 'O' Anusandhan University, Bhubaneswar</span>
-                                                <span>2019 – 2023</span>
+                                                <span>August 2019 – August 2023</span>
                                             </div>
-                                            <div className="card-sub-row">B.Tech in Computer Science</div>
+                                            <div className="card-sub-row">B. Tech in Computer Science & Engineering</div>
                                             <p style={{ fontSize: '12px', marginTop: '4px' }}><b>CGPA Score:</b> 8.73</p>
                                         </div>
 
                                     </div>
                                 </section>
 
-                                {/* 6. CONTACT SECTION */}
+                                {/* 6. CERTIFICATIONS SECTION */}
+                                <section id="certifications-section" className="portfolio-section-block">
+                                    <h2 className="section-caption-header">Awards & Certifications</h2>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                        <div>
+                                            <p style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '6px' }}>Scripting Badges:</p>
+                                            <ul className="custom-bullet-points">
+                                                <li>HackerRank Java (Basic)</li>
+                                                <li>HackerRank Problem Solving (Basic)</li>
+                                                <li>Practical GitHub Actions</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <p style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '6px' }}>Cloud & DevOps:</p>
+                                            <ul className="custom-bullet-points">
+                                                <li>HashiCorp Certified Terraform Associate</li>
+                                                <li>LFS169: Intro to GitOps</li>
+                                                <li>KodeKloud Kubernetes (Level 1)</li>
+                                                <li>LFS158: Intro to Kubernetes</li>
+                                                <li>LFS167: Intro to Jenkins</li>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <p style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '6px' }}>Security & AI:</p>
+                                            <ul className="custom-bullet-points">
+                                                <li>Cybersecurity Awareness Terminology</li>
+                                                <li>Google AI Professional Certificate</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* 7. CONTACT SECTION */}
                                 <section id="contact-section" className="portfolio-section-block" style={{ textAlign: 'center' }}>
                                     <h2 className="section-caption-header" style={{ borderLeft: 'none', paddingLeft: 0 }}>Let's Get in Touch</h2>
                                     <p className="paragraph-content" style={{ textAlign: 'center', marginBottom: '25px' }}>
