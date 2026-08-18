@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react';
 
 type OpenMenuKey = 'apple' | 'navigation' | 'view' | null;
 
+interface JournalEntry {
+    id: string;
+    date: string;
+    title: string;
+    category: string;
+    content: string;
+    tags?: string[];
+}
+
 export default function App() {
     const [systemTime, setSystemTime] = useState<string>('');
     const [openMenu, setOpenMenu] = useState<OpenMenuKey>(null);
@@ -11,6 +20,76 @@ export default function App() {
     const [isHold, setIsHold] = useState<boolean>(false);
     const [timeLeft, setTimeLeft] = useState<number>(300); // 5 Minutes in seconds
     const [isEating, setIsEating] = useState<boolean>(false);
+
+    // Learning Journal state
+    const [journalEntries] = useState<JournalEntry[]>([
+        {
+            id: 'j1',
+            date: '2026-08-15',
+            title: 'ELK Stack Deep Dive: Distributed Logging at Scale',
+            category: 'DevOps',
+            content: 'Explored implementing centralized logging across 12+ microservices using Elasticsearch, Logstash, and Kibana. Key insight: structuring JSON logs with trace IDs dramatically improves debugging latency in production incidents.',
+            tags: ['Observability', 'ELK', 'Microservices']
+        },
+        {
+            id: 'j2',
+            date: '2026-08-12',
+            title: 'Terraform State Management Best Practices',
+            category: 'Cloud',
+            content: 'Implementing remote state backends with locking mechanisms prevents race conditions in team environments. S3 + DynamoDB is production-ready but requires careful IAM role configuration for cross-account deployments.',
+            tags: ['Terraform', 'IaC', 'AWS']
+        },
+        {
+            id: 'j3',
+            date: '2026-08-10',
+            title: 'Zero-Trust Security Model Implementation',
+            category: 'Security',
+            content: 'Learned how to architect Zero-Trust security using IRSA (IAM Roles for Service Accounts) in Kubernetes, CyberArk certificate rotation, and AWS Secrets Manager lifecycle management. Never trust, always verify.',
+            tags: ['Security', 'Kubernetes', 'IAM']
+        },
+        {
+            id: 'j4',
+            date: '2026-08-08',
+            title: 'Building Production-Grade ETL Pipelines with SnapLogic',
+            category: 'Integration',
+            content: 'SnapLogic Mapper snaps provide powerful data transformation without custom code. Critical lesson: parameterize connectors for reusability—20+ pipelines now leverage 10 shared templates, reducing deployment time by 50%.',
+            tags: ['ETL', 'SnapLogic', 'Data Integration']
+        },
+        {
+            id: 'j5',
+            date: '2026-08-05',
+            title: 'OAuth 2.0 & Microsoft Graph API Integration Patterns',
+            category: 'Integration',
+            content: 'Successfully integrated Microsoft Graph API with OAuth 2.0 device flow for enterprise messaging. Key takeaway: always cache access tokens and implement exponential backoff for rate-limited endpoints.',
+            tags: ['OAuth2', 'Microsoft Graph', 'Authentication']
+        },
+        {
+            id: 'j6',
+            date: '2026-08-02',
+            title: 'Spring Boot Microservices: From Monolith to Distributed',
+            category: 'Architecture',
+            content: 'Refactored legacy monolithic WAR deployments into cloud-native JAR-based microservices. Challenges: transactional consistency, distributed tracing, and handling cascading failures. Solution: eventually-consistent event-driven architecture with circuit breakers.',
+            tags: ['Spring Boot', 'Microservices', 'Architecture']
+        },
+        {
+            id: 'j7',
+            date: '2026-07-30',
+            title: 'Real-Time Data Processing: Stream vs Batch Trade-offs',
+            category: 'AI',
+            content: 'Studying event streaming architectures for real-time analytics. Kafka for streaming, S3 for batch. Data latency vs consistency trade-offs matter when choosing between them for enterprise pipelines.',
+            tags: ['Kafka', 'Streaming', 'Data Architecture']
+        },
+        {
+            id: 'j8',
+            date: '2026-07-28',
+            title: 'Debugging Production Incidents with Root Cause Analysis',
+            category: 'DevOps',
+            content: 'Framework for effective RCA: timeline reconstruction → hypothesis testing → preventive measures. Structured logging and distributed tracing are non-negotiable for modern systems. Every incident is a learning opportunity.',
+            tags: ['RCA', 'Debugging', 'Operations']
+        }
+    ]);
+    const [searchQuery, setSearchQuery] = useState<string>('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
 
     // Synchronize Top Right System Clock
     useEffect(() => {
@@ -133,7 +212,8 @@ export default function App() {
                             <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('projects-section'))}>4. Technical Artifacts</span>
                             <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('education-section'))}>5. Academic History</span>
                             <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('certifications-section'))}>6. Awards & Certifications</span>
-                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('contact-section'))}>7. Link Communications</span>
+                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('learning-journal-section'))}>7. Learning Journal</span>
+                            <span className="dropdown-action-item" onClick={(e) => handleActionClick(e, () => navigateToSection('contact-section'))}>8. Link Communications</span>
                         </div>
                     </div>
 
@@ -485,7 +565,121 @@ export default function App() {
                                     </div>
                                 </section>
 
-                                {/* 7. CONTACT SECTION */}
+                                {/* 7. LEARNING JOURNAL SECTION */}
+                                <section id="learning-journal-section" className="portfolio-section-block">
+                                    <h2 className="section-caption-header">Learning Journal & Insights</h2>
+                                    
+                                    {/* Search and Filter Controls */}
+                                    <div style={{ marginBottom: '20px' }}>
+                                        <div style={{ marginBottom: '12px' }}>
+                                            <input
+                                                type="text"
+                                                placeholder="Search journal entries..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                style={{
+                                                    width: '100%',
+                                                    padding: '8px 12px',
+                                                    fontSize: '12px',
+                                                    border: '1px solid #000',
+                                                    fontFamily: "'Monaco', 'Courier New', monospace",
+                                                    boxSizing: 'border-box'
+                                                }}
+                                            />
+                                        </div>
+                                        
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                            {['All', 'DevOps', 'Cloud', 'Security', 'Integration', 'Architecture', 'AI'].map(category => (
+                                                <button
+                                                    key={category}
+                                                    onClick={() => setSelectedCategory(category)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        fontSize: '11px',
+                                                        fontWeight: selectedCategory === category ? 'bold' : 'normal',
+                                                        border: selectedCategory === category ? '2px solid #000' : '1px solid #000',
+                                                        background: selectedCategory === category ? '#000' : '#fff',
+                                                        color: selectedCategory === category ? '#fff' : '#000',
+                                                        cursor: 'pointer',
+                                                        fontFamily: "'Monaco', 'Courier New', monospace",
+                                                        transition: 'all 0.2s'
+                                                    }}
+                                                >
+                                                    {category}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Journal Entries Grid */}
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '12px', marginTop: '16px' }}>
+                                        {journalEntries
+                                            .filter(entry => {
+                                                const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                                      entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                                      entry.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+                                                const matchesCategory = selectedCategory === 'All' || entry.category === selectedCategory;
+                                                return matchesSearch && matchesCategory;
+                                            })
+                                            .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                                            .map(entry => (
+                                                <div key={entry.id} style={{
+                                                    border: '1px solid #000',
+                                                    padding: '12px',
+                                                    background: '#fff',
+                                                    fontFamily: "'Monaco', 'Courier New', monospace",
+                                                    fontSize: '11px',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    gap: '8px'
+                                                }}>
+                                                    <div>
+                                                        <h4 style={{ margin: 0, fontSize: '12px', fontWeight: 'bold', lineHeight: '1.4' }}>
+                                                            {entry.title}
+                                                        </h4>
+                                                    </div>
+                                                    
+                                                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                                        <span style={{ fontSize: '10px', color: '#666' }}>{new Date(entry.date).toLocaleDateString()}</span>
+                                                        <span className="badge-tag" style={{ marginRight: 0 }}>{entry.category}</span>
+                                                    </div>
+                                                    
+                                                    <p style={{ margin: '8px 0 0 0', lineHeight: '1.5', color: '#222' }}>
+                                                        {entry.content}
+                                                    </p>
+                                                    
+                                                    {entry.tags && entry.tags.length > 0 && (
+                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
+                                                            {entry.tags.map(tag => (
+                                                                <span key={tag} style={{
+                                                                    fontSize: '9px',
+                                                                    padding: '2px 6px',
+                                                                    border: '1px solid #ccc',
+                                                                    background: '#f9f9f9'
+                                                                }}>
+                                                                    #{tag}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            ))}
+                                    </div>
+                                    
+                                    {journalEntries.filter(entry => {
+                                        const matchesSearch = entry.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                              entry.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                                              entry.tags?.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+                                        const matchesCategory = selectedCategory === 'All' || entry.category === selectedCategory;
+                                        return matchesSearch && matchesCategory;
+                                    }).length === 0 && (
+                                        <div style={{ textAlign: 'center', padding: '20px', fontSize: '12px', color: '#666' }}>
+                                            No entries found. Try a different search or category filter.
+                                        </div>
+                                    )}
+                                </section>
+
+                                {/* 8. CONTACT SECTION */}
                                 <section id="contact-section" className="portfolio-section-block" style={{ textAlign: 'center' }}>
                                     <h2 className="section-caption-header" style={{ borderLeft: 'none', paddingLeft: 0 }}>Let's Get in Touch</h2>
                                     <p className="paragraph-content" style={{ textAlign: 'center', marginBottom: '25px' }}>
