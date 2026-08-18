@@ -25,6 +25,10 @@ jobs:
         working-directory: mac-portfolio
         run: npm ci
 
+      - name: Lint Code Quality Check
+        working-directory: mac-portfolio
+        run: npm run lint
+
       - name: Compile Code and Build Production Static Site
         working-directory: mac-portfolio
         run: npm run build
