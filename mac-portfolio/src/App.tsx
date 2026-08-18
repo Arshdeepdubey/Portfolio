@@ -21,8 +21,8 @@ export default function App() {
     const [timeLeft, setTimeLeft] = useState<number>(300); // 5 Minutes in seconds
     const [isEating, setIsEating] = useState<boolean>(false);
 
-    // Learning Journal state
-    const [journalEntries] = useState<JournalEntry[]>([
+    // Learning Journal state - mutable for admin CRUD operations
+    const defaultEntries: JournalEntry[] = [
         {
             id: 'j1',
             date: '2026-08-15',
@@ -87,9 +87,90 @@ export default function App() {
             content: 'Framework for effective RCA: timeline reconstruction → hypothesis testing → preventive measures. Structured logging and distributed tracing are non-negotiable for modern systems. Every incident is a learning opportunity.',
             tags: ['RCA', 'Debugging', 'Operations']
         }
-    ]);
+    ];
+    const [journalEntries, setJournalEntries] = useState<JournalEntry[]>(defaultEntries);
     const [searchQuery, setSearchQuery] = useState<string>('');
     const [selectedCategory, setSelectedCategory] = useState<string>('All');
+    
+    // Admin authentication state
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+    const [showAdminPanel, setShowAdminPanel] = useState<boolean>(false);
+    const [adminPassword] = useState<string>('arsh-admin-2026');
+    const [adminPasswordInput, setAdminPasswordInput] = useState<string>('');
+    const [editingEntry, setEditingEntry] = useState<JournalEntry | null>(null);
+    const [formData, setFormData] = useState<Partial<JournalEntry>>({
+        date: new Date().toISOString().split('T')[0],
+        title: '',
+        category: 'DevOps',
+        content: '',
+        tags: []
+    });
+
+    // Admin authentication handler
+    const handleAdminLogin = (password: string) => {
+        if (password === adminPassword) {
+            setIsAuthenticated(true);
+            setAdminPasswordInput('');
+        } else {
+            alert('Incorrect password');
+        }
+    };
+
+    const handleAdminLogout = () => {
+        setIsAuthenticated(false);
+        setShowAdminPanel(false);
+        setEditingEntry(null);
+        setFormData({ date: new Date().toISOString().split('T')[0], title: '', category: 'DevOps', content: '', tags: [] });
+    };
+
+    // CRUD Operations
+    const handleAddEntry = () => {
+        if (!formData.title || !formData.content) {
+            alert('Title and content are required');
+            return;
+        }
+        const newEntry: JournalEntry = {
+            id: `j${Date.now()}`,
+            date: formData.date || new Date().toISOString().split('T')[0],
+            title: formData.title,
+            category: formData.category || 'DevOps',
+            content: formData.content,
+            tags: formData.tags || []
+        };
+        setJournalEntries([newEntry, ...journalEntries]);
+        setFormData({ date: new Date().toISOString().split('T')[0], title: '', category: 'DevOps', content: '', tags: [] });
+    };
+
+    const handleUpdateEntry = () => {
+        if (!editingEntry || !formData.title || !formData.content) {
+            alert('Title and content are required');
+            return;
+        }
+        const updatedEntries = journalEntries.map(entry =>
+            entry.id === editingEntry.id
+                ? { ...entry, ...formData as JournalEntry }
+                : entry
+        );
+        setJournalEntries(updatedEntries);
+        setEditingEntry(null);
+        setFormData({ date: new Date().toISOString().split('T')[0], title: '', category: 'DevOps', content: '', tags: [] });
+    };
+
+    const handleDeleteEntry = (id: string) => {
+        if (confirm('Are you sure you want to delete this entry?')) {
+            setJournalEntries(journalEntries.filter(entry => entry.id !== id));
+        }
+    };
+
+    const handleEditEntry = (entry: JournalEntry) => {
+        setEditingEntry(entry);
+        setFormData(entry);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingEntry(null);
+        setFormData({ date: new Date().toISOString().split('T')[0], title: '', category: 'DevOps', content: '', tags: [] });
+    };
 
     // Synchronize Top Right System Clock
     useEffect(() => {
@@ -234,9 +315,27 @@ export default function App() {
                     </div>
                 </div>
 
-                {/* Live Clock Display */}
-                <div style={{ marginLeft: 'auto', fontSize: '12px', fontWeight: 'bold' }}>
-                    {systemTime}
+                {/* Admin Panel Button & Live Clock */}
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    <button
+                        onClick={() => setShowAdminPanel(!showAdminPanel)}
+                        style={{
+                            padding: '4px 8px',
+                            fontSize: '11px',
+                            fontWeight: isAuthenticated ? 'bold' : 'normal',
+                            border: '1px solid #000',
+                            background: isAuthenticated ? '#fffb15' : '#fff',
+                            color: '#000',
+                            cursor: 'pointer',
+                            fontFamily: "'Monaco', 'Courier New', monospace"
+                        }}
+                        title={isAuthenticated ? 'Admin Panel (Authenticated)' : 'Admin Login'}
+                    >
+                        {isAuthenticated ? '⚙️ ADMIN' : '🔒 ADMIN'}
+                    </button>
+                    <div style={{ fontSize: '12px', fontWeight: 'bold' }}>
+                        {systemTime}
+                    </div>
                 </div>
             </nav>
 
@@ -704,6 +803,280 @@ export default function App() {
 
                             </div>
                         </>
+                    )}
+
+                    {/* Admin Panel Modal */}
+                    {showAdminPanel && (
+                        <div style={{
+                            position: 'fixed',
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            background: 'rgba(0, 0, 0, 0.7)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            zIndex: 1000
+                        }}>
+                            <div style={{
+                                background: '#fff',
+                                border: '2px solid #000',
+                                padding: '20px',
+                                maxWidth: '600px',
+                                maxHeight: '80vh',
+                                overflow: 'auto',
+                                fontFamily: "'Monaco', 'Courier New', monospace",
+                                fontSize: '11px'
+                            }}>
+                                {!isAuthenticated ? (
+                                    <div>
+                                        <h2 style={{ margin: '0 0 16px 0' }}>ADMIN LOGIN</h2>
+                                        <input
+                                            type="password"
+                                            placeholder="Enter admin password"
+                                            value={adminPasswordInput}
+                                            onChange={(e) => setAdminPasswordInput(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && handleAdminLogin(adminPasswordInput)}
+                                            style={{
+                                                width: '100%',
+                                                padding: '8px',
+                                                fontSize: '11px',
+                                                border: '1px solid #000',
+                                                marginBottom: '12px',
+                                                boxSizing: 'border-box',
+                                                fontFamily: "'Monaco', 'Courier New', monospace"
+                                            }}
+                                            autoFocus
+                                        />
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button
+                                                onClick={() => handleAdminLogin(adminPasswordInput)}
+                                                style={{
+                                                    flex: 1,
+                                                    padding: '8px',
+                                                    fontSize: '11px',
+                                                    background: '#000',
+                                                    color: '#fff',
+                                                    border: '1px solid #000',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Login
+                                            </button>
+                                            <button
+                                                onClick={() => setShowAdminPanel(false)}
+                                                style={{
+                                                    flex: 1,
+                                                    padding: '8px',
+                                                    fontSize: '11px',
+                                                    background: '#fff',
+                                                    color: '#000',
+                                                    border: '1px solid #000',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                                            <h2 style={{ margin: 0 }}>ADMIN PANEL</h2>
+                                            <button
+                                                onClick={handleAdminLogout}
+                                                style={{
+                                                    padding: '4px 8px',
+                                                    fontSize: '10px',
+                                                    background: '#000',
+                                                    color: '#fff',
+                                                    border: '1px solid #000',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+
+                                        {/* Entry Form */}
+                                        <div style={{ border: '1px solid #000', padding: '12px', marginBottom: '16px' }}>
+                                            <h3 style={{ margin: '0 0 12px 0', fontSize: '11px' }}>
+                                                {editingEntry ? 'EDIT ENTRY' : 'CREATE NEW ENTRY'}
+                                            </h3>
+                                            <div style={{ marginBottom: '8px' }}>
+                                                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Date</label>
+                                                <input
+                                                    type="date"
+                                                    value={formData.date || ''}
+                                                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '6px',
+                                                        fontSize: '11px',
+                                                        border: '1px solid #000',
+                                                        boxSizing: 'border-box'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ marginBottom: '8px' }}>
+                                                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Title</label>
+                                                <input
+                                                    type="text"
+                                                    value={formData.title || ''}
+                                                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                                                    placeholder="Entry title"
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '6px',
+                                                        fontSize: '11px',
+                                                        border: '1px solid #000',
+                                                        boxSizing: 'border-box'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ marginBottom: '8px' }}>
+                                                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Category</label>
+                                                <select
+                                                    value={formData.category || 'DevOps'}
+                                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '6px',
+                                                        fontSize: '11px',
+                                                        border: '1px solid #000',
+                                                        boxSizing: 'border-box'
+                                                    }}
+                                                >
+                                                    <option value="DevOps">DevOps</option>
+                                                    <option value="Cloud">Cloud</option>
+                                                    <option value="Security">Security</option>
+                                                    <option value="Integration">Integration</option>
+                                                    <option value="Architecture">Architecture</option>
+                                                    <option value="AI">AI</option>
+                                                </select>
+                                            </div>
+                                            <div style={{ marginBottom: '8px' }}>
+                                                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Content</label>
+                                                <textarea
+                                                    value={formData.content || ''}
+                                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                                    placeholder="Entry content"
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '6px',
+                                                        fontSize: '11px',
+                                                        border: '1px solid #000',
+                                                        boxSizing: 'border-box',
+                                                        minHeight: '80px',
+                                                        fontFamily: "'Monaco', 'Courier New', monospace"
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ marginBottom: '12px' }}>
+                                                <label style={{ display: 'block', marginBottom: '4px', fontWeight: 'bold' }}>Tags (comma-separated)</label>
+                                                <input
+                                                    type="text"
+                                                    value={(formData.tags || []).join(', ')}
+                                                    onChange={(e) => setFormData({ ...formData, tags: e.target.value.split(',').map(t => t.trim()).filter(t => t) })}
+                                                    placeholder="e.g., DevOps, Kubernetes, AWS"
+                                                    style={{
+                                                        width: '100%',
+                                                        padding: '6px',
+                                                        fontSize: '11px',
+                                                        border: '1px solid #000',
+                                                        boxSizing: 'border-box'
+                                                    }}
+                                                />
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    onClick={editingEntry ? handleUpdateEntry : handleAddEntry}
+                                                    style={{
+                                                        flex: 1,
+                                                        padding: '8px',
+                                                        fontSize: '11px',
+                                                        background: '#000',
+                                                        color: '#fff',
+                                                        border: '1px solid #000',
+                                                        cursor: 'pointer',
+                                                        fontWeight: 'bold'
+                                                    }}
+                                                >
+                                                    {editingEntry ? 'Update Entry' : 'Create Entry'}
+                                                </button>
+                                                {editingEntry && (
+                                                    <button
+                                                        onClick={handleCancelEdit}
+                                                        style={{
+                                                            flex: 1,
+                                                            padding: '8px',
+                                                            fontSize: '11px',
+                                                            background: '#fff',
+                                                            color: '#000',
+                                                            border: '1px solid #000',
+                                                            cursor: 'pointer'
+                                                        }}
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+
+                                        {/* Entries List */}
+                                        <div>
+                                            <h3 style={{ margin: '0 0 12px 0', fontSize: '11px' }}>MANAGE ENTRIES ({journalEntries.length})</h3>
+                                            <div style={{ maxHeight: '300px', overflow: 'auto' }}>
+                                                {journalEntries.map(entry => (
+                                                    <div key={entry.id} style={{
+                                                        border: '1px solid #ccc',
+                                                        padding: '8px',
+                                                        marginBottom: '8px',
+                                                        background: editingEntry?.id === entry.id ? '#fffb15' : '#f9f9f9'
+                                                    }}>
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '6px' }}>
+                                                            <div>
+                                                                <div style={{ fontWeight: 'bold', fontSize: '10px' }}>{entry.title}</div>
+                                                                <div style={{ fontSize: '9px', color: '#666' }}>{entry.date} • {entry.category}</div>
+                                                            </div>
+                                                            <div style={{ display: 'flex', gap: '4px' }}>
+                                                                <button
+                                                                    onClick={() => handleEditEntry(entry)}
+                                                                    style={{
+                                                                        padding: '4px 8px',
+                                                                        fontSize: '9px',
+                                                                        background: '#000',
+                                                                        color: '#fff',
+                                                                        border: 'none',
+                                                                        cursor: 'pointer'
+                                                                    }}
+                                                                >
+                                                                    Edit
+                                                                </button>
+                                                                <button
+                                                                    onClick={() => handleDeleteEntry(entry.id)}
+                                                                    style={{
+                                                                        padding: '4px 8px',
+                                                                        fontSize: '9px',
+                                                                        background: '#f00',
+                                                                        color: '#fff',
+                                                                        border: 'none',
+                                                                        cursor: 'pointer'
+                                                                    }}
+                                                                >
+                                                                    Delete
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     )}
 
                 </div>
