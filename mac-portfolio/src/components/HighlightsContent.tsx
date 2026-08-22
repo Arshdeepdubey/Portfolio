@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function HighlightsContent() {
   return (
     <div style={{ fontFamily: 'Courier New, Courier, monospace', color: '#1a1a1a' }}>

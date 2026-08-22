@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function PortfolioContent() {
   const projects = [
     {

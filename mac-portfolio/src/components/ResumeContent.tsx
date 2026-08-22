@@ -1,4 +1,3 @@
-import React from 'react';
 // 1. Import the image directly so Vite resolves the path dynamically
 import profilePhoto from '../assets/profile-photo.jpg';
 
