@@ -1,11 +1,17 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
 export default defineConfig(({ command }) => {
+  let base = '/'
+  
+  if (command === 'build') {
+    // Use environment variable set by the deployment workflow
+    const deployFolder = process.env.DEPLOY_FOLDER || '.'
+    base = deployFolder === '.' ? '/Portfolio/' : '/Portfolio/resume/'
+  }
+
   return {
     plugins: [react()],
-    // Use '/' for local dev, and '/Portfolio/' for your GitHub repository production build
-    base: command === 'serve' ? '/' : '/Portfolio/',
+    base,
   }
 })

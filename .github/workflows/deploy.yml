@@ -42,6 +42,8 @@ jobs:
 
       - name: Compile Code and Build Production Static Site
         working-directory: mac-portfolio
+        env:
+          DEPLOY_FOLDER: ${{ steps.target.outputs.folder }}
         run: npm run build
 
       - name: Push Build Output to GitHub Pages Branch
