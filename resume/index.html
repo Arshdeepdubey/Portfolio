@@ -6,6 +6,22 @@
     <link rel="icon" type="image/svg+xml" href="./favicon.svg" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Arshdeep's Portfolio</title>
+
+    <!-- Single Page Apps for GitHub Pages redirect receiver -->
+    <script type="text/javascript">
+      (function() {
+        var q = window.location.search;
+        if (q.indexOf('?p=') === 0 || q.indexOf('&p=') !== -1) {
+          var l = window.location;
+          var p = q.slice(3).split('&')[0].replace(/~and~/g, '&');
+          window.history.replaceState(null, null,
+            l.pathname.slice(0, -1) + p +
+            (l.search.indexOf('&q=') !== -1 ? '?' + l.search.split('&q=')[1].split('&')[0].replace(/~and~/g, '&') : '') +
+            l.hash
+          );
+        }
+      })();
+    </script>
     <script type="module" crossorigin src="/Portfolio/assets/index-DjlMP7GZ.js"></script>
     <link rel="stylesheet" crossorigin href="/Portfolio/assets/index-C-gSlFdp.css">
   </head>
