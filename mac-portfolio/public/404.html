@@ -5,16 +5,25 @@
     <title>Redirecting...</title>
     <script type="text/javascript">
       // Single Page Apps for GitHub Pages
-      // This script takes the current URL and redirects it to the index.html page 
-      // with the path encoded as a query parameter, which Vite/React Router can then parse.
-      var pathSegmentsToKeep = 1; // Adjust based on your repo name depth (1 for /Portfolio/)
-
-      var l = window.location;
-      var repoName = l.pathname.split('/')[1]; // Extracts 'Portfolio'
+      // Dynamically detects whether we're in the root (/Portfolio/) or resume (/Portfolio/resume/) deployment
+      // and redirects to the appropriate index.html with the path encoded as a query parameter
       
+      var l = window.location;
+      var pathname = l.pathname;
+      
+      // Detect if we're in the /resume/ subdirectory
+      var isResumeDeployment = pathname.includes('/resume/');
+      var basePath = isResumeDeployment ? '/Portfolio/resume/' : '/Portfolio/';
+      
+      // Extract remaining path segments after the base path
+      var segments = pathname.split('/').filter(Boolean); // Remove empty strings
+      var pathStartIndex = isResumeDeployment ? 3 : 2; // Skip 'Portfolio' or 'Portfolio/resume'
+      var remainingPath = segments.slice(pathStartIndex).join('/');
+      
+      // Redirect to index.html with encoded path
       l.replace(
-        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + '/' + repoName + '/?p=/' +
-        l.pathname.slice(1).split('/').slice(pathSegmentsToKeep).join('/').replace(/&/g, '~and~') +
+        l.protocol + '//' + l.hostname + (l.port ? ':' + l.port : '') + 
+        basePath + '?p=/' + (remainingPath ? remainingPath + '/' : '').replace(/&/g, '~and~') +
         (l.search ? '&q=' + l.search.slice(1).replace(/&/g, '~and~') : '') +
         l.hash
       );
