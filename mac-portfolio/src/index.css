@@ -33,21 +33,20 @@ body, html, #root {
   flex-direction: column;
 }
 
-/* --- FIX: Top Navigation Bar Alignment --- */
+/* --- Top Navigation Bar Alignment --- */
 .mac-top-bar {
   height: 40px;
   background-color: var(--topbar-bg);
   border-bottom: 2px solid var(--border-dark);
   display: flex;
   align-items: center;
-  justify-content: space-between; /* Space out the 3 sections */
+  justify-content: space-between; 
   padding: 0 20px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   margin: 4px 4px 0 4px;
 }
 
-/* Force left and right sections to have equal width so center stays centered */
 .topbar-left, .topbar-right {
   flex: 1;
   display: flex;
@@ -88,26 +87,36 @@ body, html, #root {
   position: relative;
   width: 100%;
   height: calc(100% - 44px);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
-/* Flex container for desktop widgets (Sticky Note & About) */
+/* Flex container for desktop widgets */
 .desktop-content-area {
   display: flex;
   flex-direction: row;
-  gap: 50px;
-  padding: 80px 60px;
-  max-width: calc(100% - 150px);
-  align-items: flex-start;
+  flex-wrap: wrap; 
+  gap: 40px;
+  padding: 40px 100px 80px 40px;
+  max-width: calc(100% - 120px);
+  align-items: flex-start; 
+}
+
+/* FIX: Left Column keeps instruction note and video stacked snugly together */
+.left-column {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 280px;
+  flex-shrink: 0;
 }
 
 .sticky-note {
   position: relative;
   background-color: var(--sticky-green);
   color: white;
-  padding: 30px;
-  width: 250px;
-  min-width: 250px;
+  padding: 20px;
+  width: 100%;
   border: 2px solid var(--border-dark);
   box-shadow: 6px 6px 0px var(--shadow-dark);
   transform: rotate(-2deg);
@@ -127,22 +136,61 @@ body, html, #root {
 
 .embedded-about {
   background: transparent;
-  padding: 20px;
-  max-width: 500px;
+  padding: 10px;
+  max-width: 480px;
+  flex: 1;
 }
 
 .embedded-about h1 {
   font-size: 42px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   font-style: italic;
   letter-spacing: -2px;
 }
 
 .embedded-about p {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
   color: var(--text-color);
+}
+
+/* Retro Video Player Styling */
+.retro-video-container {
+  width: 100%;
+  background: var(--window-bg);
+  border: 2px solid var(--border-dark);
+  box-shadow: 6px 6px 0px var(--shadow-dark);
+  display: flex;
+  flex-direction: column;
+  transform: rotate(1deg);
+}
+
+.video-title-bar {
+  background: #ffffff;
+  border-bottom: 2px solid var(--border-dark);
+  padding: 4px 8px;
+  font-weight: bold;
+  font-size: 12px;
+  text-align: center;
+  background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, #000 2px, #000 3px);
+  background-size: 100% 2px;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.video-title-text {
+  background: #ffffff;
+  padding: 0 8px;
+  display: inline-block;
+}
+
+.desktop-video {
+  width: 100%;
+  height: 180px;
+  object-fit: cover; 
+  background: #000000;
+  display: block;
 }
 
 /* --- Interactive Elements --- */
@@ -152,7 +200,8 @@ body, html, #root {
   right: 40px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 24px;
+  z-index: 10;
 }
 
 .desktop-icon-btn {
@@ -162,15 +211,15 @@ body, html, #root {
   background: none;
   border: none;
   cursor: pointer;
-  gap: 8px;
+  gap: 6px;
 }
 
 .icon-graphic {
-  width: 64px;
-  height: 64px;
+  width: 56px;
+  height: 56px;
   background: #ffffff;
   border: 2px solid var(--border-dark);
-  border-radius: 12px; /* Softer rounded corners */
+  border-radius: 12px; 
   box-shadow: 4px 4px 0px var(--shadow-dark);
   display: flex;
   align-items: center;
@@ -179,7 +228,6 @@ body, html, #root {
   padding: 8px;
 }
 
-/* Ensure SVG scales nicely inside the box */
 .icon-graphic svg {
   width: 100%;
   height: 100%;
@@ -192,7 +240,10 @@ body, html, #root {
 
 .icon-label {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 13px;
+  background: rgba(245, 242, 235, 0.8);
+  padding: 2px 6px;
+  border-radius: 4px;
 }
 
 /* --- Window System --- */
@@ -208,24 +259,25 @@ body, html, #root {
   z-index: 100;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .desktop-content-area {
-    flex-direction: column;
     padding: 20px;
     max-width: 100%;
+    padding-right: 20px;
   }
   
-  .sticky-note {
+  .left-column {
     width: 100%;
-    transform: rotate(0deg);
   }
 
   .icon-grid {
     position: relative;
-    top: 0; right: 0;
+    top: 0; 
+    right: 0;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
+    flex-wrap: wrap;
     width: 100%;
-    margin-top: 20px;
+    margin: 20px 0;
   }
 }

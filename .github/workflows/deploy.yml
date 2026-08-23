@@ -7,7 +7,7 @@ on:
       - phase/1-resume-update
 
 permissions:
-  contents: write # Allows the action to commit build artifacts to the gh-pages branch
+  contents: write
 
 jobs:
   build-and-deploy:
@@ -15,6 +15,15 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
+
+      - name: Determine Deployment Target Directory
+        id: target
+        run: |
+          if [ "${{ github.ref_name }}" = "arsh-portfolio-setup" ]; then
+            echo "folder=." >> $GITHUB_OUTPUT
+          elif [ "${{ github.ref_name }}" = "phase/1-resume-update" ]; then
+            echo "folder=resume" >> $GITHUB_OUTPUT
+          fi
 
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
@@ -40,3 +49,5 @@ jobs:
         with:
           folder: mac-portfolio/dist
           branch: gh-pages
+          target-folder: ${{ steps.target.outputs.folder }}
+          clean: false # Keeps both root and subfolder deployments active
