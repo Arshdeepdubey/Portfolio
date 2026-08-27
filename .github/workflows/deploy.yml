@@ -37,10 +37,15 @@ jobs:
         working-directory: mac-portfolio
         run: npm run build
 
+     # 1. Create the file to bypass Jekyll
+      - name: Bypass Jekyll on GitHub Pages
+        run: touch mac-portfolio/dist/.nojekyll
+
+      # 2. Push the files (without the dotfiles parameter)
       - name: Push Build Output to GitHub Pages Branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/arsh-portfolio-setup'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: mac-portfolio/dist
           branch: gh-pages
-          clean: true
+          clean: true # Ensure the .nojekyll file gets pushed

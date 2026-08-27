@@ -14,10 +14,10 @@ export default function App() {
     const [isMuted, setIsMuted] = useState(true);
     const videoRef = useRef<HTMLVideoElement>(null);
 
-    const baseUrl = import.meta.env.BASE_URL || '/';
-    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
-    // Cache buster ?v=2 forces browser to reload the new audio-enabled video file
-    const videoSrc = `${cleanBaseUrl}intro_video.mp4?v=2`;
+    // FIX: Ensure the video path works correctly on GitHub Pages
+    const baseUrl = import.meta.env.BASE_URL;
+    // If base is '/Portfolio/', this becomes '/Portfolio/intro_video.mp4?v=2'
+    const videoSrc = `${baseUrl}intro_video.mp4?v=2`; 
 
     const toggleWindow = (win: WindowKey) => {
         setOpenWindows(prev => 

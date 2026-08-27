@@ -275,8 +275,10 @@ body, html, #root {
 /* --- Window System --- */
 .os-window {
   position: absolute;
-  width: 600px;
-  height: 450px;
+  /* Updated for responsiveness */
+  width: min(600px, 95vw);
+  height: min(450px, 80vh);
+  max-width: 100%;
   background: var(--window-bg);
   border: 2px solid var(--border-dark);
   box-shadow: 8px 8px 0px var(--shadow-dark);
@@ -322,6 +324,7 @@ body, html, #root {
   cursor: pointer;
 }
 
+/* Tablet Overrides */
 @media (max-width: 1024px) {
   .desktop-content-area {
     padding: 20px;
@@ -342,9 +345,11 @@ body, html, #root {
     flex-wrap: wrap;
     width: 100%;
     margin: 20px 0;
+    gap: 16px; /* Added spacing for tablet rows */
   }
 }
 
+/* Mobile Overrides */
 @media (max-width: 768px) {
   .mac-bottom-bar {
     flex-direction: column;
@@ -357,5 +362,35 @@ body, html, #root {
   .dev-links {
     flex-wrap: wrap;
     justify-content: center;
+  }
+  
+  /* Lock windows to the center of the screen */
+  .os-window {
+    width: 94vw !important;
+    height: 75vh !important;
+    left: 3vw !important;
+    top: 10vh !important;
+    transform: none !important; 
+  }
+
+  /* Prevent search bar from breaking the top navigation */
+  .spotlight-search {
+    max-width: 160px;
+    padding: 4px 8px;
+  }
+  
+  .spotlight-search input {
+    font-size: 12px;
+  }
+
+  /* Scale down the massive 'hello.' text */
+  .embedded-about h1 {
+    font-size: 32px;
+  }
+  
+  /* Responsive video */
+  .desktop-video {
+    height: auto;
+    aspect-ratio: 16/9;
   }
 }
