@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 
 export default defineConfig({
   plugins: [react()],
-  // Must match the EXACT casing of your GitHub repository name
-  base: '/Portfolio/', 
+  // Use a relative path. This completely bypasses any case-sensitivity 
+  // issues with GitHub Pages repository names.
+  base: './', 
 });
