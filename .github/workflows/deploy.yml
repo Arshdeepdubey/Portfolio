@@ -3,8 +3,10 @@ name: Deploy Portfolio to GitHub Pages
 on:
   push:
     branches: 
-      - arsh-portfolio-setup 
-      - phase/1-resume-update
+      - arsh-portfolio-setup
+  pull_request:
+    branches:
+      - arsh-portfolio-setup
 
 permissions:
   contents: write
@@ -15,15 +17,6 @@ jobs:
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v4
-
-      - name: Determine Deployment Target Directory
-        id: target
-        run: |
-          if [ "${{ github.ref_name }}" = "arsh-portfolio-setup" ]; then
-            echo "folder=." >> $GITHUB_OUTPUT
-          elif [ "${{ github.ref_name }}" = "phase/1-resume-update" ]; then
-            echo "folder=resume" >> $GITHUB_OUTPUT
-          fi
 
       - name: Setup Node.js Environment
         uses: actions/setup-node@v4
@@ -42,14 +35,12 @@ jobs:
 
       - name: Compile Code and Build Production Static Site
         working-directory: mac-portfolio
-        env:
-          DEPLOY_FOLDER: ${{ steps.target.outputs.folder }}
         run: npm run build
 
       - name: Push Build Output to GitHub Pages Branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/arsh-portfolio-setup'
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: mac-portfolio/dist
           branch: gh-pages
-          target-folder: ${{ steps.target.outputs.folder }}
-          clean: false # Keeps both root and subfolder deployments active
+          clean: true
