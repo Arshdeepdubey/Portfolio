@@ -1,8 +1,8 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+// mac-portfolio/vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Portfolio/', // <-- CRITICAL: match your GitHub repo name exactly (case-sensitive)
-})
+  base: '/portfolio/', // Ensures correct asset routing for github.io/portfolio/
+});
