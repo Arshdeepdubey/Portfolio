@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import MacWindow from './components/MacWindow';
 import ResumeContent from './components/ResumeContent';
 import PortfolioContent from './components/PortfolioContent';
@@ -6,19 +6,37 @@ import NewsletterContent from './components/NewsletterContent';
 import HighlightsContent from './components/HighlightsContent';
 import { AppleIcon, SearchIcon, FolderIcon, UserIcon, DocumentIcon, StarIcon } from './components/Icons';
 
-// FIX: Import the video asset directly so Vite resolves paths correctly locally and on GitHub Pages
-import showcaseVideo from './assets/showcase.mp4';
-
 type WindowKey = 'portfolio' | 'resume' | 'newsletters' | 'highlights';
 
 export default function App() {
     const [openWindows, setOpenWindows] = useState<WindowKey[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isMuted, setIsMuted] = useState(true);
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    const baseUrl = import.meta.env.BASE_URL || '/';
+    const cleanBaseUrl = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`;
+    // Cache buster ?v=2 forces browser to reload the new audio-enabled video file
+    const videoSrc = `${cleanBaseUrl}intro_video.mp4?v=2`;
 
     const toggleWindow = (win: WindowKey) => {
         setOpenWindows(prev => 
             prev.includes(win) ? prev.filter(w => w !== win) : [...prev, win]
         );
+    };
+
+    const toggleAudio = () => {
+        const video = videoRef.current;
+        if (!video) return;
+
+        const nextState = !isMuted;
+        video.muted = nextState;
+        video.volume = 1.0;
+        setIsMuted(nextState);
+
+        if (!nextState) {
+            video.play().catch(err => console.error("Audio playback error:", err));
+        }
     };
 
     const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -58,9 +76,7 @@ export default function App() {
             <main className="desktop-workspace">
                 <div className="desktop-content-area">
                     
-                    {/* FIX: Left Column wrapper to stack Instructions and Video with zero large gaps */}
                     <div className="left-column">
-                        {/* Widget 1: Sticky Note */}
                         <div className="sticky-note">
                             <div className="sticky-pin"></div>
                             <h2 style={{ textDecoration: 'underline', marginBottom: '15px', fontSize: '18px' }}>Instruction</h2>
@@ -80,35 +96,58 @@ export default function App() {
                             </div>
                         </div>
 
-                        {/* Widget 3: The Retro Video Player directly below */}
                         <div className="retro-video-container">
                             <div className="video-title-bar">
-                                <span className="video-title-text">showcase.mp4</span>
+                                <span className="video-title-text">intro_video.mp4</span>
+                                <button 
+                                    className="sound-toggle-btn"
+                                    onClick={toggleAudio}
+                                    title="Toggle Audio"
+                                >
+                                    {isMuted ? '🔇 Unmute Sound' : '🔊 Sound On'}
+                                </button>
                             </div>
                             <video 
-                                src={showcaseVideo} 
+                                ref={videoRef}
+                                src={videoSrc}
                                 autoPlay 
                                 loop 
-                                muted 
+                                muted={isMuted}
+                                controls
                                 playsInline
                                 className="desktop-video"
-                            />
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                            <p style={{ fontSize: '11px', marginTop: '8px', fontStyle: 'italic', textAlign: 'center', color: '#555', lineHeight: '1.3' }}>
+                                👾 <strong>Fun Fact:</strong> If I look like a 90s retro arcade NPC, don't worry—it's 100% custom pixel rendering, not a GPU driver crash!
+                            </p>
                         </div>
                     </div>
 
-                    {/* Right Column: Embedded About Me */}
                     <div className="embedded-about">
                         <h1>hello.</h1>
                         <p style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '10px' }}>I am Arshdeep Dubey.</p>
                         <p>
-                            Systems Developer, Ex-Software Engineer II, and AI enthusiast. I specialize in building resilient microservices and automating cloud infrastructure deployment. 
-                        </p>
-                        <div style={{ marginTop: '15px', background: 'var(--window-bg)', padding: '12px', border: '2px solid var(--border-dark)', boxShadow: '4px 4px 0px var(--shadow-dark)' }}>
-                            🚀 <strong>Impact Highlight:</strong> During my tenure at Fidelity, I received an <strong>On-the-Spot award (Feb 2025)</strong> for outstanding business KPI deliveries ahead of schedule. I successfully built 20+ reusable ETL pipeline templates enterprise-wide and solely managed complex cloud migrations, architecting robust CI/CD pipelines for secrets automation and secure S3 bucket archival.
-                        </div>
-                        <p style={{ color: '#666', borderTop: '2px dashed #ccc', paddingTop: '15px', marginTop: '15px' }}>
                             Welcome to my interactive workspace. Use the folders on the right or the Spotlight Search above to explore my technical artifacts and professional history.
                         </p>
+                        
+                        <div style={{ marginTop: '15px', background: 'var(--window-bg)', padding: '14px', border: '2px solid var(--border-dark)', boxShadow: '4px 4px 0px var(--shadow-dark)' }}>
+                            <p style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>🚀 Here are some top impacts I had:</p>
+                            <ul style={{ paddingLeft: '20px', fontSize: '13px', lineHeight: '1.6' }}>
+                                <li style={{ marginBottom: '6px' }}>
+                                    Engineered 20+ reusable enterprise ETL templates, boosting engineering productivity by <strong>45%</strong>.
+                                </li>
+                                <li style={{ marginBottom: '6px' }}>
+                                    Implemented strict GitOps workflows and decoupled microservices, cutting deployment overhead by <strong>30%</strong> and incident MTTR by <strong>40%</strong>.
+                                </li>
+                                <li style={{ marginBottom: '6px' }}>
+                                    Earned the <strong>Fidelity On-the-Spot Award (Feb 2025)</strong> for executing complex cloud migrations and secrets/S3 CI/CD automation ahead of schedule.
+                                </li>
+                            </ul>
+                            
+                        </div>
+                        
                     </div>
 
                 </div>
@@ -135,7 +174,6 @@ export default function App() {
                     </button>
                 </div>
 
-                {/* Centralized Windows */}
                 {openWindows.includes('portfolio') && (
                     <MacWindow title="Portfolio_Latest_Work.exe" onClose={() => toggleWindow('portfolio')} zIndex={101}>
                         <PortfolioContent />
@@ -160,6 +198,17 @@ export default function App() {
                     </MacWindow>
                 )}
             </main>
+
+            <footer className="mac-bottom-bar">
+                <span className="contact-info">+91 7635055774 • Jamshedpur, Jharkhand, India</span>
+                <div className="dev-links">
+                    <a href="mailto:arshdeepdubey.ad@gmail.com" target="_blank" rel="noreferrer">Email</a>
+                    <a href="https://github.com/Arshdeepdubey" target="_blank" rel="noreferrer">GitHub</a>
+                    <a href="https://linkedin.com/in/dubey-arshdeep" target="_blank" rel="noreferrer">LinkedIn</a>
+                    <a href="https://leetcode.com/u/zorojuro_conqueror/" target="_blank" rel="noreferrer">LeetCode</a>
+                    <a href="https://arshdeepdubey.github.io/Portfolio/" target="_blank" rel="noreferrer">Portfolio</a>
+                </div>
+            </footer>
         </div>
     );
 }

@@ -36,6 +36,7 @@ body, html, #root {
 /* --- Top Navigation Bar Alignment --- */
 .mac-top-bar {
   height: 40px;
+  flex-shrink: 0;
   background-color: var(--topbar-bg);
   border-bottom: 2px solid var(--border-dark);
   display: flex;
@@ -86,7 +87,6 @@ body, html, #root {
   flex: 1;
   position: relative;
   width: 100%;
-  height: calc(100% - 44px);
   overflow-y: auto;
   overflow-x: hidden;
 }
@@ -102,7 +102,7 @@ body, html, #root {
   align-items: flex-start; 
 }
 
-/* FIX: Left Column keeps instruction note and video stacked snugly together */
+/* Left Column keeps instruction note and video stacked snugly together */
 .left-column {
   display: flex;
   flex-direction: column;
@@ -172,7 +172,9 @@ body, html, #root {
   padding: 4px 8px;
   font-weight: bold;
   font-size: 12px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background-image: repeating-linear-gradient(90deg, transparent, transparent 2px, #000 2px, #000 3px);
   background-size: 100% 2px;
   background-position: center;
@@ -181,8 +183,32 @@ body, html, #root {
 
 .video-title-text {
   background: #ffffff;
-  padding: 0 8px;
+  padding: 0 6px;
   display: inline-block;
+}
+
+.sound-toggle-btn {
+  background: var(--border-dark);
+  color: #ffffff;
+  border: 1px solid var(--border-dark);
+  border-radius: 3px;
+  font-size: 11px;
+  font-family: inherit;
+  font-weight: bold;
+  padding: 2px 6px;
+  cursor: pointer;
+  box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
+  transition: transform 0.05s ease-in-out;
+  z-index: 2;
+}
+
+.sound-toggle-btn:hover {
+  background: #000000;
+}
+
+.sound-toggle-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: none;
 }
 
 .desktop-video {
@@ -259,6 +285,43 @@ body, html, #root {
   z-index: 100;
 }
 
+/* --- PROFILE LINKS BOTTOM BAR --- */
+.mac-bottom-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: var(--topbar-bg);
+  border-top: 2px solid var(--border-dark);
+  padding: 4px 20px;
+  font-size: 13px;
+  height: 32px;
+  flex-shrink: 0;
+  z-index: 1000;
+}
+
+.contact-info {
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.dev-links {
+  display: flex;
+  gap: 16px;
+}
+
+.dev-links a {
+  color: var(--text-color);
+  text-decoration: none;
+  font-weight: bold;
+  border-bottom: 2px solid transparent;
+  transition: border-bottom 0.1s ease-in-out;
+}
+
+.dev-links a:hover {
+  border-bottom: 2px solid var(--border-dark);
+  cursor: pointer;
+}
+
 @media (max-width: 1024px) {
   .desktop-content-area {
     padding: 20px;
@@ -279,5 +342,20 @@ body, html, #root {
     flex-wrap: wrap;
     width: 100%;
     margin: 20px 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .mac-bottom-bar {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+    gap: 8px;
+    text-align: center;
+  }
+  
+  .dev-links {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
