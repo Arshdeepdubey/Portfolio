@@ -319,7 +319,6 @@ export default function App() {
                     <a href="https://github.com/Arshdeepdubey" target="_blank" rel="noreferrer">GitHub</a>
                     <a href="https://linkedin.com/in/dubey-arshdeep" target="_blank" rel="noreferrer">LinkedIn</a>
                     <a href="https://leetcode.com/u/zorojuro_conqueror/" target="_blank" rel="noreferrer">LeetCode</a>
-                    <a href="https://arshdeepdubey.github.io/Portfolio/" target="_blank" rel="noreferrer">Portfolio</a>
                 </div>
             </footer>
         </div>
