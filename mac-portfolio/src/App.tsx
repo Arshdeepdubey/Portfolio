@@ -8,16 +8,72 @@ import { AppleIcon, SearchIcon, FolderIcon, UserIcon, DocumentIcon, StarIcon } f
 
 type WindowKey = 'portfolio' | 'resume' | 'newsletters' | 'highlights';
 
+interface FolderEntry {
+    key: WindowKey;
+    label: string;
+    icon: React.ReactNode;
+}
+
 export default function App() {
     const [openWindows, setOpenWindows] = useState<WindowKey[]>([]);
+    const [minimizedWindows, setMinimizedWindows] = useState<WindowKey[]>([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchError, setSearchError] = useState<string | null>(null);
     const [isMuted, setIsMuted] = useState(true);
     const videoRef = useRef<HTMLVideoElement>(null);
+    const errorTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     // FIX: Ensure the video path works correctly on GitHub Pages
     const baseUrl = import.meta.env.BASE_URL;
-    // If base is '/Portfolio/', this becomes '/Portfolio/intro_video.mp4?v=2'
-    const videoSrc = `${baseUrl}intro_video.mp4?v=2`; 
+    // If base is '/Portfolio/', this becomes '/Portfolio/intro_video.mp4?v=6'
+    const videoSrc = `${baseUrl}intro_video.mp4?v=6`; 
+
+    const folders: FolderEntry[] = [
+        { key: 'portfolio', label: 'Portfolio', icon: <FolderIcon /> },
+        { key: 'resume', label: 'Resume', icon: <UserIcon /> },
+        { key: 'newsletters', label: 'Newsletters', icon: <DocumentIcon /> },
+        { key: 'highlights', label: 'Highlights', icon: <StarIcon /> },
+    ];
+
+    // While browsing (empty query) show every folder; while typing, filter live
+    // using a case-insensitive partial regex so the user can narrow the list.
+    const visibleFolders = searchQuery.trim()
+        ? folders.filter((f) => {
+              try {
+                  return new RegExp(searchQuery.trim(), 'i').test(f.label);
+              } catch {
+                  // Invalid regex input (e.g. dangling bracket) - fall back to plain substring match
+                  return f.label.toLowerCase().includes(searchQuery.trim().toLowerCase());
+              }
+          })
+        : folders;
+
+    const showSearchError = () => {
+        setSearchError('Folder does not exist');
+        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+        errorTimeoutRef.current = setTimeout(() => setSearchError(null), 2000);
+    };
+
+    const openFolder = (key: WindowKey) => {
+        if (!openWindows.includes(key)) toggleWindow(key);
+        setMinimizedWindows(prev => prev.filter(windowKey => windowKey !== key));
+        setSearchQuery('');
+        setIsSearchOpen(false);
+    };
+
+    const closeWindow = (key: WindowKey) => {
+        setOpenWindows(prev => prev.filter(windowKey => windowKey !== key));
+        setMinimizedWindows(prev => prev.filter(windowKey => windowKey !== key));
+    };
+
+    const minimizeWindow = (key: WindowKey) => {
+        setMinimizedWindows(prev => prev.includes(key) ? prev : [...prev, key]);
+    };
+
+    const restoreWindow = (key: WindowKey) => {
+        setMinimizedWindows(prev => prev.filter(windowKey => windowKey !== key));
+    };
 
     const toggleWindow = (win: WindowKey) => {
         setOpenWindows(prev => 
@@ -40,13 +96,21 @@ export default function App() {
     };
 
     const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            const query = searchQuery.toLowerCase();
-            if (query.includes('resume') && !openWindows.includes('resume')) toggleWindow('resume');
-            else if ((query.includes('portfolio') || query.includes('projects')) && !openWindows.includes('portfolio')) toggleWindow('portfolio');
-            else if (query.includes('newsletter') && !openWindows.includes('newsletters')) toggleWindow('newsletters');
-            else if (query.includes('highlight') && !openWindows.includes('highlights')) toggleWindow('highlights');
-            setSearchQuery(''); 
+        if (e.key !== 'Enter') return;
+
+        const query = searchQuery.trim();
+        if (!query) return;
+
+        // Exact folder-name match (case-insensitive). "projects" still maps
+        // to the Portfolio folder as a convenience alias.
+        const exactMatch = folders.find((f) => new RegExp(`^${f.label}$`, 'i').test(query));
+        const aliasMatch = /^projects$/i.test(query) ? folders.find((f) => f.key === 'portfolio') : undefined;
+        const match = exactMatch ?? aliasMatch;
+
+        if (match) {
+            openFolder(match.key);
+        } else {
+            showSearchError();
         }
     };
 
@@ -58,15 +122,43 @@ export default function App() {
                 </div>
                 
                 <div className="topbar-center">
-                    <div className="spotlight-search">
-                        <SearchIcon />
-                        <input 
-                            type="text" 
-                            placeholder="Spotlight Search (e.g. resume, portfolio)" 
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                            onKeyDown={handleSearch}
-                        />
+                    <div className="spotlight-search-wrapper">
+                        <div className="spotlight-search">
+                            <SearchIcon />
+                            <input
+                                type="text"
+                                placeholder="Spotlight Search (e.g. resume, portfolio)"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyDown={handleSearch}
+                                onFocus={() => setIsSearchOpen(true)}
+                                onBlur={() => setTimeout(() => setIsSearchOpen(false), 150)}
+                            />
+                        </div>
+
+                        {isSearchOpen && (
+                            <ul className="spotlight-dropdown" role="listbox">
+                                {visibleFolders.length > 0 ? (
+                                    visibleFolders.map((f) => (
+                                        <li key={f.key}>
+                                            <button
+                                                type="button"
+                                                className="spotlight-dropdown-item"
+                                                onMouseDown={(e) => e.preventDefault()} // keep focus so onBlur doesn't fire first
+                                                onClick={() => openFolder(f.key)}
+                                            >
+                                                <span className="spotlight-dropdown-icon">{f.icon}</span>
+                                                {f.label}
+                                            </button>
+                                        </li>
+                                    ))
+                                ) : (
+                                    <li className="spotlight-dropdown-empty">No matching folders</li>
+                                )}
+                            </ul>
+                        )}
+
+                        {searchError && <div className="spotlight-error-toast">{searchError}</div>}
                     </div>
                 </div>
                 
@@ -129,7 +221,7 @@ export default function App() {
                         <h1>hello.</h1>
                         <p style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '10px' }}>I am Arshdeep Dubey.</p>
                         <p>
-                            Welcome to my interactive workspace. Use the folders on the right or the Spotlight Search above to explore my technical artifacts and professional history.
+                            Welcome to my interactive space. Use the folders on the right or the Spotlight Search above to explore my technical artifacts and professional history.
                         </p>
                         
                         <div style={{ marginTop: '15px', background: 'var(--window-bg)', padding: '14px', border: '2px solid var(--border-dark)', boxShadow: '4px 4px 0px var(--shadow-dark)' }}>
@@ -153,56 +245,77 @@ export default function App() {
                 </div>
 
                 <div className="icon-grid">
-                    <button className="desktop-icon-btn" onClick={() => toggleWindow('portfolio')}>
+                    <button className="desktop-icon-btn" onClick={() => openWindows.includes('portfolio') && minimizedWindows.includes('portfolio') ? restoreWindow('portfolio') : toggleWindow('portfolio')}>
                         <div className="icon-graphic"><FolderIcon /></div>
                         <span className="icon-label">Portfolio</span>
                     </button>
 
-                    <button className="desktop-icon-btn" onClick={() => toggleWindow('resume')}>
+                    <button className="desktop-icon-btn" onClick={() => openWindows.includes('resume') && minimizedWindows.includes('resume') ? restoreWindow('resume') : toggleWindow('resume')}>
                         <div className="icon-graphic"><UserIcon /></div>
                         <span className="icon-label">Resume</span>
                     </button>
 
-                    <button className="desktop-icon-btn" onClick={() => toggleWindow('newsletters')}>
+                    <button className="desktop-icon-btn" onClick={() => openWindows.includes('newsletters') && minimizedWindows.includes('newsletters') ? restoreWindow('newsletters') : toggleWindow('newsletters')}>
                         <div className="icon-graphic"><DocumentIcon /></div>
                         <span className="icon-label">Newsletters</span>
                     </button>
 
-                    <button className="desktop-icon-btn" onClick={() => toggleWindow('highlights')}>
+                    <button className="desktop-icon-btn" onClick={() => openWindows.includes('highlights') && minimizedWindows.includes('highlights') ? restoreWindow('highlights') : toggleWindow('highlights')}>
                         <div className="icon-graphic"><StarIcon /></div>
                         <span className="icon-label">Highlights</span>
                     </button>
                 </div>
 
-                {openWindows.includes('portfolio') && (
-                    <MacWindow title="Portfolio_Latest_Work.exe" onClose={() => toggleWindow('portfolio')} zIndex={101}>
+                {openWindows.includes('portfolio') && !minimizedWindows.includes('portfolio') && (
+                    <MacWindow title="Portfolio_Latest_Work.exe" onClose={() => closeWindow('portfolio')} onMinimize={() => minimizeWindow('portfolio')} zIndex={101}>
                         <PortfolioContent />
                     </MacWindow>
                 )}
 
-                {openWindows.includes('resume') && (
-                    <MacWindow title="Resume_2026.pdf" onClose={() => toggleWindow('resume')} zIndex={102}>
+                {openWindows.includes('resume') && !minimizedWindows.includes('resume') && (
+                    <MacWindow title="Resume_2026.pdf" onClose={() => closeWindow('resume')} onMinimize={() => minimizeWindow('resume')} zIndex={102}>
                         <ResumeContent />
                     </MacWindow>
                 )}
 
-                {openWindows.includes('newsletters') && (
-                    <MacWindow title="Newsletters.txt" onClose={() => toggleWindow('newsletters')} zIndex={103}>
+                {openWindows.includes('newsletters') && !minimizedWindows.includes('newsletters') && (
+                    <MacWindow title="Newsletters.txt" onClose={() => closeWindow('newsletters')} onMinimize={() => minimizeWindow('newsletters')} zIndex={103}>
                         <NewsletterContent />
                     </MacWindow>
                 )}
 
-                {openWindows.includes('highlights') && (
-                    <MacWindow title="Yearly_Highlights.log" onClose={() => toggleWindow('highlights')} zIndex={104}>
+                {openWindows.includes('highlights') && !minimizedWindows.includes('highlights') && (
+                    <MacWindow title="Yearly_Highlights.log" onClose={() => closeWindow('highlights')} onMinimize={() => minimizeWindow('highlights')} zIndex={104}>
                          <HighlightsContent />
                     </MacWindow>
+                )}
+
+                {minimizedWindows.length > 0 && (
+                    <div className="window-dock" aria-label="Minimized windows">
+                        {minimizedWindows.map(key => {
+                            const folder = folders.find(entry => entry.key === key);
+                            if (!folder) return null;
+
+                            return (
+                                <button
+                                    key={key}
+                                    type="button"
+                                    className="window-dock-item"
+                                    onClick={() => restoreWindow(key)}
+                                    title={`Restore ${folder.label}`}
+                                >
+                                    <span className="window-dock-icon">{folder.icon}</span>
+                                    <span>{folder.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
                 )}
             </main>
 
             <footer className="mac-bottom-bar">
-                <span className="contact-info">+91 7635055774 • Jamshedpur, Jharkhand, India</span>
+                <span className="contact-info">+91 7635055774  • arshdeepdubey.ad@gmail.com • Jamshedpur, IN</span>
                 <div className="dev-links">
-                    <a href="mailto:arshdeepdubey.ad@gmail.com" target="_blank" rel="noreferrer">Email</a>
                     <a href="https://github.com/Arshdeepdubey" target="_blank" rel="noreferrer">GitHub</a>
                     <a href="https://linkedin.com/in/dubey-arshdeep" target="_blank" rel="noreferrer">LinkedIn</a>
                     <a href="https://leetcode.com/u/zorojuro_conqueror/" target="_blank" rel="noreferrer">LeetCode</a>

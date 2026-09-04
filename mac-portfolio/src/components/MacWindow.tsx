@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 interface MacWindowProps {
   title: string;
   onClose: () => void;
+  onMinimize: () => void;
   children: React.ReactNode;
   zIndex?: number;
 }
 
-export default function MacWindow({ title, onClose, children, zIndex = 100 }: MacWindowProps) {
-  const [isMinimized, setIsMinimized] = useState(false);
-
+export default function MacWindow({ title, onClose, onMinimize, children, zIndex = 100 }: MacWindowProps) {
   return (
     <div 
       className="os-window" 
@@ -18,8 +17,7 @@ export default function MacWindow({ title, onClose, children, zIndex = 100 }: Ma
         left: '50%', 
         transform: 'translate(-50%, -50%)', 
         zIndex,
-        height: isMinimized ? 'auto' : '550px', // Collapse height when minimized
-        transition: 'height 0.2s ease-in-out'
+        height: '550px'
       }}
     >
       <div style={{ background: 'white', borderBottom: '2px solid #2a2a2a', padding: '8px', display: 'flex', alignItems: 'center' }}>
@@ -32,9 +30,9 @@ export default function MacWindow({ title, onClose, children, zIndex = 100 }: Ma
           ></button>
           {/* Minimize Button (Yellow) */}
           <button 
-            onClick={() => setIsMinimized(!isMinimized)} 
+            onClick={onMinimize}
             style={{ width: '14px', height: '14px', border: '2px solid black', background: '#ffbd2e', cursor: 'pointer', borderRadius: '50%' }}
-            title={isMinimized ? "Expand" : "Minimize"}
+            title="Minimize"
           ></button>
         </div>
         
@@ -43,11 +41,9 @@ export default function MacWindow({ title, onClose, children, zIndex = 100 }: Ma
         <div style={{ flex: 1 }}></div>
       </div>
       
-      {!isMinimized && (
-        <div style={{ padding: '20px', overflowY: 'auto', flex: 1, backgroundColor: '#faf9f6' }}>
-          {children}
-        </div>
-      )}
+      <div style={{ padding: '20px', overflowY: 'auto', flex: 1, backgroundColor: '#faf9f6' }}>
+        {children}
+      </div>
     </div>
   );
 }
