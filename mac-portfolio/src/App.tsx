@@ -317,8 +317,14 @@ export default function App() {
                 <span className="contact-info">+91 7635055774  • arshdeepdubey.ad@gmail.com • Jamshedpur, IN</span>
                 <div className="dev-links">
                     <a href="https://github.com/Arshdeepdubey" target="_blank" rel="noreferrer">GitHub</a>
+                    {' • '}
                     <a href="https://linkedin.com/in/dubey-arshdeep" target="_blank" rel="noreferrer">LinkedIn</a>
+                    {' • '}
                     <a href="https://leetcode.com/u/zorojuro_conqueror/" target="_blank" rel="noreferrer">LeetCode</a>
+                    {' • '}
+                    <a href="https://www.reddit.com/user/Euphoric_Anything542/" target="_blank" rel="noreferrer">Reddit</a>
+                    {' • '}
+                    <a href="https://x.com/Arshdeep_dubey" target="_blank" rel="noreferrer">X</a>
                 </div>
             </footer>
         </div>
