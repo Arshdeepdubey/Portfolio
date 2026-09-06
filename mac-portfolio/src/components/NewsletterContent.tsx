@@ -28,15 +28,15 @@ const articles: Article[] = [
 
 export default function NewsletterContent() {
     return (
-        <div style={{ padding: '16px', height: '100%', overflowY: 'auto' }}>
-            <div style={{ marginBottom: '20px', borderBottom: '2px dashed var(--border-dark)', paddingBottom: '12px' }}>
-                <h2 style={{ fontSize: '18px', marginBottom: '6px' }}>📰 LinkedIn Newsletters & Articles</h2>
-                <p style={{ fontSize: '12px', color: '#555' }}>
+        <div style={{ padding: 'clamp(12px, 3vw, 16px)', height: '100%', overflowY: 'auto' }}>
+            <div style={{ marginBottom: 'clamp(14px, 3vw, 20px)', borderBottom: '2px dashed var(--border-dark)', paddingBottom: 'clamp(8px, 1.5vw, 12px)' }}>
+                <h2 style={{ fontSize: 'clamp(14px, 4vw, 18px)', marginBottom: 'clamp(4px, 1vw, 6px)' }}>📰 LinkedIn Newsletters & Articles</h2>
+                <p style={{ fontSize: 'clamp(10px, 2vw, 12px)', color: '#555' }}>
                     Technical deep dives, architectural blueprints, and engineering insights published on LinkedIn.
                 </p>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 'clamp(12px, 2vw, 16px)' }}>
                 {articles.map(article => (
                     <article 
                         key={article.id}
@@ -44,20 +44,20 @@ export default function NewsletterContent() {
                             background: '#ffffff',
                             border: '2px solid var(--border-dark)',
                             boxShadow: '4px 4px 0px var(--shadow-dark)',
-                            padding: '14px',
+                            padding: 'clamp(10px, 2.5vw, 14px)',
                             display: 'flex',
                             flexDirection: 'column',
-                            gap: '8px'
+                            gap: 'clamp(6px, 1.5vw, 8px)'
                         }}
                     >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontSize: '11px', background: 'var(--sticky-green)', color: '#fff', padding: '2px 6px', fontWeight: 'bold', borderRadius: '2px' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 'clamp(6px, 1vw, 10px)', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: 'clamp(9px, 1.8vw, 11px)', background: 'var(--sticky-green)', color: '#fff', padding: 'clamp(2px, 0.5vw, 6px)', fontWeight: 'bold', borderRadius: '2px', whiteSpace: 'nowrap' }}>
                                 LinkedIn Article
                             </span>
-                            <span style={{ fontSize: '11px', color: '#666', fontWeight: 'bold' }}>{article.date}</span>
+                            <span style={{ fontSize: 'clamp(9px, 1.8vw, 11px)', color: '#666', fontWeight: 'bold' }}>{article.date}</span>
                         </div>
 
-                        <h3 style={{ fontSize: '15px', lineHeight: '1.3' }}>
+                        <h3 style={{ fontSize: 'clamp(12px, 3vw, 15px)', lineHeight: 1.3 }}>
                             <a 
                                 href={article.link} 
                                 target="_blank" 
@@ -68,19 +68,20 @@ export default function NewsletterContent() {
                             </a>
                         </h3>
 
-                        <p style={{ fontSize: '12px', lineHeight: '1.5', color: '#333' }}>
+                        <p style={{ fontSize: 'clamp(10px, 2vw, 12px)', lineHeight: 1.5, color: '#333' }}>
                             {article.description}
                         </p>
 
-                        <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap', marginTop: '4px' }}>
+                        <div style={{ display: 'flex', gap: 'clamp(4px, 1vw, 6px)', flexWrap: 'wrap', marginTop: 'clamp(2px, 0.5vw, 4px)' }}>
                             {article.tags.map(tag => (
                                 <span 
                                     key={tag} 
                                     style={{ 
-                                        fontSize: '10px', 
+                                        fontSize: 'clamp(8px, 1.5vw, 10px)', 
                                         border: '1px solid var(--border-dark)', 
-                                        padding: '1px 5px', 
-                                        background: '#f0f0f0' 
+                                        padding: 'clamp(1px, 0.5vw, 5px)', 
+                                        background: '#f0f0f0',
+                                        whiteSpace: 'nowrap' 
                                     }}
                                 >
                                     #{tag}

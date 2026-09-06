@@ -16,8 +16,7 @@ export default function MacWindow({ title, onClose, onMinimize, children, zIndex
         top: '50%', 
         left: '50%', 
         transform: 'translate(-50%, -50%)', 
-        zIndex,
-        height: '550px'
+        zIndex
       }}
     >
       <div style={{ background: 'white', borderBottom: '2px solid #2a2a2a', padding: '8px', display: 'flex', alignItems: 'center' }}>

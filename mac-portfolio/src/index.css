@@ -6,6 +6,14 @@
   --shadow-dark: #2a2a2a;
   --sticky-green: #1dd760;
   --window-bg: #faf9f6;
+  
+  /* Responsive Typography */
+  --font-h1: clamp(24px, 8vw, 42px);
+  --font-h2: clamp(16px, 5vw, 24px);
+  --font-h3: clamp(14px, 4vw, 18px);
+  --font-body: clamp(12px, 2.5vw, 14px);
+  --font-small: clamp(10px, 2vw, 13px);
+  --font-tiny: clamp(9px, 1.5vw, 11px);
 }
 
 * {
@@ -18,6 +26,7 @@
 body, html, #root {
   width: 100%;
   height: 100%;
+  min-height: 100%;
   background-color: var(--bg-color);
   background-image: repeating-linear-gradient(90deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 4px),
                     repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 4px);
@@ -27,7 +36,8 @@ body, html, #root {
 
 .desktop-environment {
   width: 100vw;
-  height: 100vh;
+  height: 100dvh;
+  min-height: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -77,7 +87,7 @@ body, html, #root {
   border: none;
   outline: none;
   width: 100%;
-  font-size: 14px;
+  font-size: var(--font-body);
   background: transparent;
   margin-left: 8px;
 }
@@ -113,7 +123,7 @@ body, html, #root {
   padding: 8px 10px;
   border: none;
   background: transparent;
-  font-size: 13px;
+  font-size: var(--font-small);
   text-align: left;
   cursor: pointer;
   border-radius: 3px;
@@ -132,7 +142,7 @@ body, html, #root {
 
 .spotlight-dropdown-empty {
   padding: 8px 10px;
-  font-size: 13px;
+  font-size: var(--font-small);
   color: #777;
 }
 
@@ -143,7 +153,7 @@ body, html, #root {
   right: 0;
   background: #ff5f56;
   color: white;
-  font-size: 12px;
+  font-size: var(--font-tiny);
   font-weight: bold;
   text-align: center;
   padding: 6px 10px;
@@ -164,6 +174,7 @@ body, html, #root {
 /* --- Desktop Layout Container --- */
 .desktop-workspace {
   flex: 1;
+  min-height: 0;
   position: relative;
   width: 100%;
   overflow-y: auto;
@@ -177,7 +188,8 @@ body, html, #root {
   flex-wrap: wrap; 
   gap: 40px;
   padding: 40px 100px 80px 40px;
-  max-width: calc(100% - 120px);
+  width: 100%;
+  max-width: none;
   align-items: flex-start; 
 }
 
@@ -186,7 +198,7 @@ body, html, #root {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 280px;
+  width: clamp(240px, 24vw, 280px);
   flex-shrink: 0;
 }
 
@@ -194,11 +206,22 @@ body, html, #root {
   position: relative;
   background-color: var(--sticky-green);
   color: white;
-  padding: 20px;
+  padding: clamp(12px, 3vw, 20px);
   width: 100%;
   border: 2px solid var(--border-dark);
   box-shadow: 6px 6px 0px var(--shadow-dark);
   transform: rotate(-2deg);
+}
+
+.sticky-note h2 {
+  font-size: var(--font-h3);
+  margin-bottom: clamp(8px, 2vw, 15px);
+}
+
+.sticky-note p {
+  font-size: var(--font-tiny);
+  line-height: 1.5;
+  margin-bottom: clamp(6px, 1.5vw, 12px);
 }
 
 .sticky-pin {
@@ -218,20 +241,31 @@ body, html, #root {
   padding: 10px;
   max-width: 480px;
   flex: 1;
+  min-width: 0;
 }
 
 .embedded-about h1 {
-  font-size: 42px;
-  margin-bottom: 10px;
+  font-size: var(--font-h1);
+  margin-bottom: clamp(6px, 2vw, 10px);
   font-style: italic;
   letter-spacing: -2px;
 }
 
 .embedded-about p {
-  font-size: 14px;
+  font-size: var(--font-body);
   line-height: 1.6;
-  margin-bottom: 12px;
+  margin-bottom: clamp(8px, 2vw, 12px);
   color: var(--text-color);
+}
+
+.embedded-about h2 {
+  font-size: var(--font-h2);
+  margin-bottom: clamp(6px, 1.5vw, 10px);
+}
+
+.embedded-about ul {
+  font-size: var(--font-body);
+  padding-left: clamp(12px, 3vw, 20px);
 }
 
 /* Retro Video Player Styling */
@@ -248,9 +282,9 @@ body, html, #root {
 .video-title-bar {
   background: #ffffff;
   border-bottom: 2px solid var(--border-dark);
-  padding: 4px 8px;
+  padding: clamp(2px, 1vw, 4px) clamp(4px, 1.5vw, 8px);
   font-weight: bold;
-  font-size: 12px;
+  font-size: var(--font-tiny);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -258,12 +292,15 @@ body, html, #root {
   background-size: 100% 2px;
   background-position: center;
   background-repeat: no-repeat;
+  flex-wrap: wrap;
+  gap: 4px;
 }
 
 .video-title-text {
   background: #ffffff;
-  padding: 0 6px;
+  padding: 0 clamp(3px, 1vw, 6px);
   display: inline-block;
+  font-size: var(--font-tiny);
 }
 
 .sound-toggle-btn {
@@ -271,14 +308,15 @@ body, html, #root {
   color: #ffffff;
   border: 1px solid var(--border-dark);
   border-radius: 3px;
-  font-size: 11px;
+  font-size: var(--font-tiny);
   font-family: inherit;
   font-weight: bold;
-  padding: 2px 6px;
+  padding: clamp(2px, 0.5vw, 6px) clamp(4px, 1vw, 8px);
   cursor: pointer;
   box-shadow: 1px 1px 0px rgba(0,0,0,0.3);
   transition: transform 0.05s ease-in-out;
   z-index: 2;
+  white-space: nowrap;
 }
 
 .sound-toggle-btn:hover {
@@ -345,10 +383,13 @@ body, html, #root {
 
 .icon-label {
   font-weight: bold;
-  font-size: 13px;
+  font-size: var(--font-tiny);
   background: rgba(245, 242, 235, 0.8);
   padding: 2px 6px;
   border-radius: 4px;
+  text-align: center;
+  max-width: 60px;
+  word-break: break-word;
 }
 
 .window-dock {
@@ -372,13 +413,13 @@ body, html, #root {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  min-width: 76px;
+  min-width: clamp(60px, 12vw, 76px);
   padding: 4px 6px;
   border: 1px solid transparent;
   background: transparent;
   color: var(--text-color);
   font: inherit;
-  font-size: 11px;
+  font-size: var(--font-tiny);
   font-weight: bold;
   cursor: pointer;
 }
@@ -409,9 +450,9 @@ body, html, #root {
 /* --- Window System --- */
 .os-window {
   position: absolute;
-  /* Updated for responsiveness */
   width: min(600px, 95vw);
-  height: min(450px, 80vh);
+  height: min(550px, calc(100dvh - 72px));
+  max-height: calc(100% - 24px);
   max-width: 100%;
   background: var(--window-bg);
   border: 2px solid var(--border-dark);
@@ -428,9 +469,10 @@ body, html, #root {
   align-items: center;
   background-color: var(--topbar-bg);
   border-top: 2px solid var(--border-dark);
-  padding: 4px 20px;
-  font-size: 13px;
-  height: 32px;
+  padding: clamp(4px, 1.5vw, 20px);
+  font-size: var(--font-small);
+  height: auto;
+  min-height: 32px;
   flex-shrink: 0;
   z-index: 1000;
 }
@@ -438,11 +480,12 @@ body, html, #root {
 .contact-info {
   font-weight: bold;
   color: var(--text-color);
+  font-size: var(--font-small);
 }
 
 .dev-links {
   display: flex;
-  gap: 16px;
+  gap: clamp(8px, 2vw, 16px);
 }
 
 .dev-links a {
@@ -451,6 +494,7 @@ body, html, #root {
   font-weight: bold;
   border-bottom: 2px solid transparent;
   transition: border-bottom 0.1s ease-in-out;
+  font-size: var(--font-small);
 }
 
 .dev-links a:hover {
@@ -461,13 +505,17 @@ body, html, #root {
 /* Tablet Overrides */
 @media (max-width: 1024px) {
   .desktop-content-area {
-    padding: 20px;
+    padding: clamp(12px, 3vw, 20px);
     max-width: 100%;
-    padding-right: 20px;
   }
   
   .left-column {
     width: 100%;
+  }
+
+  .embedded-about {
+    width: 100%;
+    max-width: none;
   }
 
   .icon-grid {
@@ -478,66 +526,146 @@ body, html, #root {
     justify-content: center;
     flex-wrap: wrap;
     width: 100%;
-    margin: 20px 0;
-    gap: 16px; /* Added spacing for tablet rows */
+    margin: clamp(12px, 3vw, 20px) 0;
+    gap: clamp(12px, 2vw, 16px);
   }
 }
 
 /* Mobile Overrides */
 @media (max-width: 768px) {
+  .mac-top-bar {
+    height: auto;
+    min-height: 40px;
+    padding: clamp(4px, 1.5vw, 10px);
+  }
+
+  .topbar-left,
+  .topbar-right {
+    flex: 0 0 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .topbar-center {
+    min-width: 0;
+    flex: 1;
+  }
+
   .mac-bottom-bar {
     flex-direction: column;
     height: auto;
-    padding: 10px;
-    gap: 8px;
+    padding: clamp(8px, 2vw, 12px);
+    gap: clamp(6px, 1.5vw, 8px);
     text-align: center;
+  }
+  
+  .contact-info {
+    word-break: break-word;
+    font-size: var(--font-tiny);
   }
   
   .dev-links {
     flex-wrap: wrap;
     justify-content: center;
+    gap: clamp(4px, 1vw, 8px);
   }
   
-  /* Lock windows to the center of the screen */
+  .dev-links a {
+    font-size: var(--font-tiny);
+  }
+  
   .os-window {
-    width: 94vw !important;
-    height: 75vh !important;
-    left: 3vw !important;
-    top: 10vh !important;
-    transform: none !important; 
+    width: calc(100% - 24px);
+    height: min(620px, calc(100dvh - 84px));
+    max-height: calc(100% - 24px);
+    left: 12px;
+    top: 12px;
+    transform: none;
   }
 
   /* Prevent search bar from breaking the top navigation */
   .spotlight-search {
-    max-width: 160px;
-    padding: 4px 8px;
+    max-width: 140px;
+    padding: clamp(3px, 1vw, 8px);
   }
   
   .spotlight-search input {
-    font-size: 12px;
+    font-size: var(--font-tiny);
   }
 
   .spotlight-search-wrapper {
-    max-width: 160px;
-  }
-
-  /* Scale down the massive 'hello.' text */
-  .embedded-about h1 {
-    font-size: 32px;
+    max-width: 140px;
   }
   
   /* Responsive video */
   .desktop-video {
     height: auto;
     aspect-ratio: 16/9;
+    max-height: 200px;
+  }
+  
+  .retro-video-container {
+    margin-bottom: clamp(12px, 3vw, 16px);
   }
 
   .window-dock {
-    bottom: 10px;
+    bottom: clamp(6px, 2vw, 10px);
+    left: 12px;
+    transform: none;
     overflow-x: auto;
+    width: calc(100% - 24px);
+    justify-content: flex-start;
+    padding: clamp(6px, 1.5vw, 10px);
+    gap: clamp(6px, 1.5vw, 10px);
   }
 
   .window-dock-item {
-    min-width: 68px;
+    min-width: clamp(56px, 12vw, 68px);
+  }
+  
+  .icon-grid {
+    position: relative;
+    top: 0;
+    right: 0;
+    flex-direction: row;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+    margin: clamp(12px, 2vw, 16px) 0;
+    gap: clamp(10px, 2vw, 14px);
+    padding: 0 clamp(8px, 2vw, 12px);
+  }
+  
+  .desktop-icon-btn {
+    flex-shrink: 0;
+  }
+  
+  .icon-graphic {
+    width: clamp(44px, 10vw, 56px);
+    height: clamp(44px, 10vw, 56px);
+    padding: clamp(4px, 1vw, 8px);
+  }
+  
+  .desktop-content-area {
+    flex-direction: column;
+    gap: clamp(12px, 3vw, 20px);
+    padding: clamp(12px, 3vw, 16px);
+  }
+  
+  .left-column {
+    width: 100%;
+    gap: clamp(12px, 2vw, 16px);
+  }
+  
+  .sticky-note {
+    display: none;
+  }
+  
+  .embedded-about {
+    order: -1;
+    width: 100%;
+    padding: clamp(8px, 2vw, 12px);
   }
 }
