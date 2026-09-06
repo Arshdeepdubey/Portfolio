@@ -187,7 +187,7 @@ body, html, #root {
   flex-direction: row;
   flex-wrap: wrap; 
   gap: 40px;
-  padding: 40px 100px 80px 40px;
+  padding: 40px 60px 80px 40px;
   width: 100%;
   max-width: none;
   align-items: flex-start; 
@@ -388,8 +388,10 @@ body, html, #root {
   padding: 2px 6px;
   border-radius: 4px;
   text-align: center;
-  max-width: 60px;
-  word-break: break-word;
+  max-width: 90px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .window-dock {
@@ -504,44 +506,113 @@ body, html, #root {
 
 /* Tablet Overrides */
 @media (max-width: 1024px) {
-  .desktop-content-area {
-    padding: clamp(12px, 3vw, 20px);
-    max-width: 100%;
+  /* Allow natural scrolling on tablets */
+  body, html, #root {
+    overflow: auto;
   }
-  
+
+  .desktop-environment {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .desktop-workspace {
+    overflow: visible;
+    height: auto;
+    flex: none;
+  }
+
+  .desktop-content-area {
+    flex-direction: column;
+    padding: clamp(16px, 3vw, 24px);
+    max-width: 100%;
+    gap: clamp(16px, 3vw, 24px);
+  }
+
   .left-column {
     width: 100%;
+    max-width: 520px;
+    align-self: center;
   }
 
   .embedded-about {
     width: 100%;
     max-width: none;
+    padding: clamp(12px, 2vw, 16px);
+  }
+
+  .desktop-video {
+    height: auto;
+    aspect-ratio: 16/9;
   }
 
   .icon-grid {
     position: relative;
-    top: 0; 
+    top: 0;
     right: 0;
     flex-direction: row;
     justify-content: center;
     flex-wrap: wrap;
     width: 100%;
-    margin: clamp(12px, 3vw, 20px) 0;
-    gap: clamp(12px, 2vw, 16px);
+    margin: clamp(12px, 3vw, 20px) auto;
+    gap: clamp(16px, 3vw, 24px);
+    padding-bottom: 20px;
+  }
+
+  .icon-graphic {
+    width: 64px;
+    height: 64px;
+  }
+
+  /* Windows: centered overlay on tablet */
+  .os-window {
+    position: fixed;
+    width: min(680px, calc(100vw - 32px));
+    height: min(580px, calc(100dvh - 100px));
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .window-dock {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
   }
 }
 
 /* Mobile Overrides */
 @media (max-width: 768px) {
+  /* Allow natural scrolling on phones */
+  body, html, #root {
+    overflow: auto;
+    height: auto;
+  }
+
+  .desktop-environment {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .desktop-workspace {
+    overflow: visible;
+    height: auto;
+    flex: none;
+    padding-bottom: 80px; /* space above bottom bar */
+  }
+
+  /* Top bar: compact, search centred */
   .mac-top-bar {
     height: auto;
-    min-height: 40px;
-    padding: clamp(4px, 1.5vw, 10px);
+    min-height: 44px;
+    padding: 6px 10px;
+    margin: 2px 2px 0 2px;
   }
 
   .topbar-left,
   .topbar-right {
-    flex: 0 0 28px;
+    flex: 0 0 24px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -550,122 +621,148 @@ body, html, #root {
   .topbar-center {
     min-width: 0;
     flex: 1;
+    padding: 0 6px;
   }
 
-  .mac-bottom-bar {
-    flex-direction: column;
-    height: auto;
-    padding: clamp(8px, 2vw, 12px);
-    gap: clamp(6px, 1.5vw, 8px);
-    text-align: center;
-  }
-  
-  .contact-info {
-    word-break: break-word;
-    font-size: var(--font-tiny);
-  }
-  
-  .dev-links {
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: clamp(4px, 1vw, 8px);
-  }
-  
-  .dev-links a {
-    font-size: var(--font-tiny);
-  }
-  
-  .os-window {
-    width: calc(100% - 24px);
-    height: min(620px, calc(100dvh - 84px));
-    max-height: calc(100% - 24px);
-    left: 12px;
-    top: 12px;
-    transform: none;
-  }
-
-  /* Prevent search bar from breaking the top navigation */
   .spotlight-search {
-    max-width: 140px;
-    padding: clamp(3px, 1vw, 8px);
+    max-width: 100%;
+    padding: 4px 8px;
   }
-  
+
   .spotlight-search input {
-    font-size: var(--font-tiny);
+    font-size: 12px;
   }
 
   .spotlight-search-wrapper {
-    max-width: 140px;
+    max-width: 100%;
   }
-  
-  /* Responsive video */
+
+  /* Stack all content vertically */
+  .desktop-content-area {
+    flex-direction: column;
+    padding: 14px 14px 20px;
+    gap: 16px;
+  }
+
+  /* About section first */
+  .embedded-about {
+    order: -1;
+    width: 100%;
+    padding: 10px 4px;
+  }
+
+  /* Left column (video + sticky note) full width */
+  .left-column {
+    width: 100%;
+    gap: 14px;
+  }
+
+  /* Hide sticky note — instructions obvious on mobile */
+  .sticky-note {
+    display: none;
+  }
+
+  /* Video: natural aspect ratio, no fixed height */
   .desktop-video {
     height: auto;
     aspect-ratio: 16/9;
-    max-height: 200px;
+    max-height: none;
   }
-  
+
   .retro-video-container {
-    margin-bottom: clamp(12px, 3vw, 16px);
+    transform: none; /* remove desktop tilt on small screens */
+    margin-bottom: 0;
   }
 
-  .window-dock {
-    bottom: clamp(6px, 2vw, 10px);
-    left: 12px;
-    transform: none;
-    overflow-x: auto;
-    width: calc(100% - 24px);
-    justify-content: flex-start;
-    padding: clamp(6px, 1.5vw, 10px);
-    gap: clamp(6px, 1.5vw, 10px);
-  }
-
-  .window-dock-item {
-    min-width: clamp(56px, 12vw, 68px);
-  }
-  
+  /* Icon grid: 2×2 grid centred, no horizontal scroll */
   .icon-grid {
     position: relative;
     top: 0;
     right: 0;
-    flex-direction: row;
-    justify-content: flex-start;
-    flex-wrap: nowrap;
-    overflow-x: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
     width: 100%;
-    margin: clamp(12px, 2vw, 16px) 0;
-    gap: clamp(10px, 2vw, 14px);
-    padding: 0 clamp(8px, 2vw, 12px);
+    margin: 8px 0 0;
+    gap: 20px 12px;
+    padding: 0 8px;
   }
-  
+
   .desktop-icon-btn {
     flex-shrink: 0;
+    width: 100%;
+    align-items: center;
   }
-  
+
   .icon-graphic {
-    width: clamp(44px, 10vw, 56px);
-    height: clamp(44px, 10vw, 56px);
-    padding: clamp(4px, 1vw, 8px);
+    width: 52px;
+    height: 52px;
+    padding: 6px;
   }
-  
-  .desktop-content-area {
+
+  .icon-label {
+    font-size: 11px;
+    max-width: 80px;
+  }
+
+  /* Open windows: full-screen fixed overlay */
+  .os-window {
+    position: fixed;
+    width: calc(100vw - 16px);
+    height: calc(100dvh - 100px);
+    left: 8px;
+    top: 50px;
+    transform: none;
+    max-width: none;
+    max-height: none;
+  }
+
+  /* Bottom bar: stacked */
+  .mac-bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
     flex-direction: column;
-    gap: clamp(12px, 3vw, 20px);
-    padding: clamp(12px, 3vw, 16px);
+    height: auto;
+    padding: 6px 10px;
+    gap: 4px;
+    text-align: center;
+    z-index: 1000;
   }
-  
-  .left-column {
-    width: 100%;
-    gap: clamp(12px, 2vw, 16px);
+
+  .contact-info {
+    word-break: break-word;
+    font-size: 10px;
+    line-height: 1.4;
   }
-  
-  .sticky-note {
-    display: none;
+
+  .dev-links {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
   }
-  
-  .embedded-about {
-    order: -1;
-    width: 100%;
-    padding: clamp(8px, 2vw, 12px);
+
+  .dev-links a {
+    font-size: 10px;
+  }
+
+  /* Minimized dock */
+  .window-dock {
+    position: fixed;
+    bottom: 56px; /* above bottom bar */
+    left: 8px;
+    right: 8px;
+    transform: none;
+    overflow-x: auto;
+    width: auto;
+    justify-content: flex-start;
+    padding: 6px 8px;
+    gap: 8px;
+  }
+
+  .window-dock-item {
+    min-width: 56px;
+    font-size: 10px;
   }
 }

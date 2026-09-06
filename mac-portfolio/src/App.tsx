@@ -203,7 +203,6 @@ export default function App() {
                                 ref={videoRef}
                                 src={videoSrc}
                                 autoPlay 
-                                loop 
                                 muted={isMuted}
                                 controls
                                 playsInline
