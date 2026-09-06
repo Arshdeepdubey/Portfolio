@@ -171,20 +171,20 @@ export default function App() {
                     <div className="left-column">
                         <div className="sticky-note">
                             <div className="sticky-pin"></div>
-                            <h2 style={{ textDecoration: 'underline', marginBottom: '15px', fontSize: '18px' }}>Instruction</h2>
+                            <h2 style={{ textDecoration: 'underline', marginBottom: 'clamp(8px, 2vw, 15px)', fontSize: 'clamp(14px, 4vw, 18px)' }}>Instruction</h2>
                             
-                            <div style={{ marginBottom: '12px', lineHeight: '1.4', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                                <div style={{ width: '18px', height: '18px', background: 'white', border: '1px solid black', borderRadius: '4px', padding: '2px', flexShrink: 0 }}>
+                            <div style={{ marginBottom: 'clamp(8px, 2vw, 12px)', lineHeight: '1.4', display: 'flex', alignItems: 'flex-start', gap: 'clamp(6px, 1.5vw, 8px)' }}>
+                                <div style={{ width: 'clamp(16px, 3vw, 18px)', height: 'clamp(16px, 3vw, 18px)', background: 'white', border: '1px solid black', borderRadius: '4px', padding: '2px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <FolderIcon />
                                 </div>
-                                <p style={{ fontSize: '13px' }}>Click <strong>Portfolio</strong> to check on my latest work.</p>
+                                <p style={{ fontSize: 'clamp(10px, 2.2vw, 13px)', lineHeight: 1.5 }}>Click <strong>Portfolio</strong> to check on my latest work.</p>
                             </div>
 
-                            <div style={{ lineHeight: '1.4', display: 'flex', alignItems: 'flex-start', gap: '8px' }}>
-                                <div style={{ width: '18px', height: '18px', background: 'white', border: '1px solid black', borderRadius: '4px', padding: '2px', flexShrink: 0 }}>
+                            <div style={{ lineHeight: '1.4', display: 'flex', alignItems: 'flex-start', gap: 'clamp(6px, 1.5vw, 8px)' }}>
+                                <div style={{ width: 'clamp(16px, 3vw, 18px)', height: 'clamp(16px, 3vw, 18px)', background: 'white', border: '1px solid black', borderRadius: '4px', padding: '2px', flexShrink: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                     <UserIcon />
                                 </div>
-                                <p style={{ fontSize: '13px' }}>Click <strong>Resume</strong> to check my history.</p>
+                                <p style={{ fontSize: 'clamp(10px, 2.2vw, 13px)', lineHeight: 1.5 }}>Click <strong>Resume</strong> to check my history.</p>
                             </div>
                         </div>
 
@@ -219,21 +219,21 @@ export default function App() {
 
                     <div className="embedded-about">
                         <h1>hello.</h1>
-                        <p style={{ fontWeight: 'bold', fontSize: '18px', marginBottom: '10px' }}>I am Arshdeep Dubey.</p>
-                        <p>
+                        <p style={{ fontWeight: 'bold', fontSize: 'clamp(14px, 4vw, 18px)', marginBottom: 'clamp(6px, 2vw, 10px)', lineHeight: 1.5 }}>I am Arshdeep Dubey.</p>
+                        <p style={{ fontSize: 'clamp(11px, 2.5vw, 14px)', marginBottom: 'clamp(8px, 2vw, 12px)' }}>
                             Welcome to my interactive space. Use the folders on the right or the Spotlight Search above to explore my technical artifacts and professional history.
                         </p>
                         
-                        <div style={{ marginTop: '15px', background: 'var(--window-bg)', padding: '14px', border: '2px solid var(--border-dark)', boxShadow: '4px 4px 0px var(--shadow-dark)' }}>
-                            <p style={{ fontWeight: 'bold', marginBottom: '8px', fontSize: '14px' }}>🚀 Here are some top impacts I had:</p>
-                            <ul style={{ paddingLeft: '20px', fontSize: '13px', lineHeight: '1.6' }}>
-                                <li style={{ marginBottom: '6px' }}>
+                        <div style={{ marginTop: 'clamp(10px, 3vw, 15px)', background: 'var(--window-bg)', padding: 'clamp(10px, 2vw, 14px)', border: '2px solid var(--border-dark)', boxShadow: '4px 4px 0px var(--shadow-dark)' }}>
+                            <p style={{ fontWeight: 'bold', marginBottom: 'clamp(6px, 1.5vw, 8px)', fontSize: 'clamp(12px, 3vw, 14px)' }}>🚀 Here are some top impacts I had:</p>
+                            <ul style={{ paddingLeft: 'clamp(14px, 3vw, 20px)', fontSize: 'clamp(11px, 2.2vw, 13px)', lineHeight: 1.6 }}>
+                                <li style={{ marginBottom: 'clamp(4px, 1.5vw, 6px)' }}>
                                     Engineered 20+ reusable enterprise ETL templates, boosting engineering productivity by <strong>45%</strong>.
                                 </li>
-                                <li style={{ marginBottom: '6px' }}>
+                                <li style={{ marginBottom: 'clamp(4px, 1.5vw, 6px)' }}>
                                     Implemented strict GitOps workflows and decoupled microservices, cutting deployment overhead by <strong>30%</strong> and incident MTTR by <strong>40%</strong>.
                                 </li>
-                                <li style={{ marginBottom: '6px' }}>
+                                <li style={{ marginBottom: 'clamp(4px, 1.5vw, 6px)' }}>
                                     Earned the <strong>Fidelity On-the-Spot Award (Feb 2025)</strong> for executing complex cloud migrations and secrets/S3 CI/CD automation ahead of schedule.
                                 </li>
                             </ul>
